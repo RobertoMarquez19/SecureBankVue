@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('cliente/register', [\App\Http\Controllers\API\ClienteController::class, 'store']);
 Route::post('usuario/register', [\App\Http\Controllers\API\AuthController::class, 'register']);
+Route::post('usuario/sms', [\App\Http\Controllers\API\AuthController::class, 'requestSMS']);
 Route::post('usuario/login', [\App\Http\Controllers\API\AuthController::class, 'login']);
 
 Route::middleware('auth:api')->group( function () {

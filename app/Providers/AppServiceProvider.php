@@ -28,7 +28,7 @@ class AppServiceProvider extends ServiceProvider
             $table = $parameters[0];
             $column = $parameters[1];
 
-            $decryptedValue = Hash::make($value);
+            $decryptedValue = \hash('sha256',$value);
             $count = DB::table($table)
                 ->where($column, '=', $decryptedValue)
                 ->count();
