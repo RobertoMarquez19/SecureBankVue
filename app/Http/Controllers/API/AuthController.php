@@ -10,7 +10,6 @@ use App\Http\Controllers\API\BaseController as BaseController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Twilio\Exceptions\RestException;
 use Twilio\Rest\Client;
@@ -123,7 +122,7 @@ class AuthController extends BaseController
                 ]);
 
             if ($validator->fails()) {
-                return $this->sendError("Errores de validacion", $validator->errors(), 500);
+                return $this->sendError("Errores de validacion", $validator->errors(), 422);
             } else {
                 $input = $request->all();
                 if (Auth::attempt($input)) {
@@ -180,7 +179,7 @@ class AuthController extends BaseController
                 ]);
 
             if ($validator->fails()) {
-                return $this->sendError("Errores de validacion", $validator->errors(), 500);
+                return $this->sendError("Errores de validacion", $validator->errors(), 422);
             } else {
                 $input = $request->all();
                 if (Auth::attempt($request->only('email', 'password'))) {
@@ -202,11 +201,10 @@ class AuthController extends BaseController
 
                         case 'approved':
                             $success['token'] = Auth::user()->createToken('SecureBank')->accessToken;
-                            $success['user_id'] = Auth::id();
                             return $this->sendResponse($success, 'Bienvenido a SecureBank');
 
                         default:
-                            return $this->sendError("Estado invalido", 'El estado del codigo es desconocido', 401);
+                            return $this->sendError("Estado invalido", 'El estado del codigo es desconocido', 500);
                     }
 
                 } else {
@@ -214,7 +212,7 @@ class AuthController extends BaseController
                 }
             }
         } catch (RestException $e) {
-            return $this->sendError("Twilio Error", "La verificacion por SMS ya ha expirado", 401);
+            return $this->sendError($e->getMessage(), "La verificacion por SMS ya ha expirado", 401);
         } catch (Exception $e) {
             return $this->sendError($e->getMessage(), "Ocurrio un error inesperado, estamos trabajando en solventarlo lo antes posible", 500);
         }
