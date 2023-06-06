@@ -16,7 +16,7 @@ class ClienteController extends BaseController
             'apellidos'=>'required|string',
             'fecha_nacimiento'=>'required',
             'email'=>'required|email|unique_encrypted:clientes,email_hash',
-            'telefono'=>'required|min:9|max:9|unique_encrypted:clientes,telefono_hash',
+            'telefono'=>'required|min:8|max:8|unique_encrypted:clientes,telefono_hash',
             'direccion'=>'required|string',
             'genero'=>'required|in:M,F',
             'estado_civil'=>'required|in:Soltero,Casado,Divorciado,Viudo',
@@ -33,8 +33,8 @@ class ClienteController extends BaseController
                 'email.email'=>'El campo email debe ser una direccion de correo valido',
                 'email:unique_encrypted'=>'Este correo electronico ya se encuentra en uso',
                 'telefono.required'=>'El campo telefono es requerido',
-                'telefono.max'=>'El campo telefono debe contener 9 digitos como maximo, incluyendo el guion',
-                'telefono.min'=>'El campo telefono debe contener 9 digitos incluyendo el guion',
+                'telefono.max'=>'El campo telefono debe contener 8 digitos como maximo',
+                'telefono.min'=>'El campo telefono debe contener 8 digitos',
                 'genero.required'=>'El campo genero es requerido',
                 'genero.in'=>'El campo genero debe ser un valor valido',
                 'estado_civil.required'=>'El campo estado civil es requerido',
@@ -74,7 +74,7 @@ class ClienteController extends BaseController
         }
     }
 
-    public function getClientePhoneNumber($id){
-        $cliente = C
+    public function getClientePhoneNumber($id):string{
+        return Crypt::decryptString(Cliente::find($id)->telefono);
     }
 }

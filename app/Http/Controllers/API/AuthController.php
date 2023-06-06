@@ -8,6 +8,7 @@ use App\Http\Controllers\API\BaseController as BaseController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Twilio\Rest\Client;
 
 class AuthController extends BaseController
 {
@@ -45,13 +46,26 @@ class AuthController extends BaseController
         }else{
             $input = $request->all();
             if(Auth::attempt($input)){
-                $user = Auth::user();
-                $success['token'] =  $user->createToken('SecureBank')-> accessToken;
-                return $this->sendResponse($success, 'Bienvenido a SecureBank');
+                $user = User::find(Auth::id());
+                $clientePhone = (new ClienteController())->getClientePhoneNumber($user->id_cliente);
+                $this->sendConfirmationMessage($clientePhone);
+                return $this->sendResponse("Mensaje confirmacion","Se ha enviado un mensaje con un codigo de verificacion, al numero vinculado a su cuenta");
             }else{
                 return $this->sendError("Credenciales incorrectas",'Unauthorized',401);
             }
 
         }
+    }
+
+    private function sendConfirmationMessage($phoneNumber){
+        $sid = getenv("TWILIO_ACCOUNT_SID");
+        $token = getenv("TWILIO_AUTH_TOKEN");
+        $twilio = new Client($sid, $token);
+
+        $verification = $twilio->verify->v2->services("VAc9d9e734d582f59b69b541efb82e3078")
+            ->verifications
+            ->create("+503".$phoneNumber, "sms");
+
+        return $this->sendResponse($verification,"Se ha enviado un codigo de verificacion al numero telefonico vinculado a su cuenta");
     }
 }
