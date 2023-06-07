@@ -1,13 +1,10 @@
+import { createApp } from 'vue/dist/vue.esm-bundler';
 import './bootstrap';
-import { createApp } from 'vue';
-import axios from 'axios'
+import '../sass/app.scss'
+import Router from "./router/index.js";
+import store from "@/store/index.js";
 
-axios.defaults.baseURL = 'http://localhost:8000/api/';
-axios.defaults.headers['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
-
-import App from './App.vue';
-import router from "./router/index.js";
-
-const app = createApp(App);
-app.use(router)
+const app = createApp({});
+app.use(Router)
+app.use(store)
 app.mount('#app');
