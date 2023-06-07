@@ -151,9 +151,13 @@ class AuthController extends BaseController
                 }
 
             }
+
+        } catch (RestException $e) {
+            return $this->sendError($e->getMessage(), "Ocurrio on error con Twilio", 401);
         } catch (Exception $e) {
             return $this->sendError($e->getMessage(), "Ocurrio un error inesperado, estamos trabajando en solventarlo lo antes posible", 500);
         }
+
     }
 
     public function login(Request $request)
