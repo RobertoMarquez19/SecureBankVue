@@ -8,78 +8,83 @@
                             <div class="card-body p-md-5 mx-md-4">
 
                                 <div class="text-center">
-                                    <img
-                                        src="images/Icono.png"
-                                        style="width: 185px;" alt="logo">
+                                    <img src="images/Icono.png" style="width: 185px;" alt="logo">
                                     <h4 class="mt-1 mb-2 pb-1">Secure Bank</h4>
                                 </div>
                                 <div class="text-center">
                                     <p class="fs-5">Crea tu cuenta aquí</p>
                                 </div>
-                                <form v-on:submit.prevent="onSubmit">
+                                <form form action="javascript:void(0)" @submit="registerCliente" class="row" method="post">
+                                    <div class="col-12" v-if="Object.keys(validationErrors).length > 0">
+                                        <div class="alert alert-danger">
+                                            <ul class="mb-0">
+                                                <li v-for="(value, key) in validationErrors" :key="key">{{ value[0] }}
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
                                     <div class="row">
                                         <div class="col form-outline mb-4">
                                             <label class="form-label" for="dui">DUI:</label>
-                                            <input type="text" id="dui" name="dui" class="form-control"
-                                                   required v-model="user.dui"/>
+                                            <input type="text" id="dui" name="dui" class="form-control" required
+                                                   v-model="cliente.dui" />
                                         </div>
 
                                         <div class="col form-outline mb-4">
                                             <label class="form-label" for="nit">NIT:</label>
-                                            <input type="text" id="nit" name="nit" class="form-control"
-                                                   required v-model="user.nit"/>
+                                            <input type="text" id="nit" name="nit" class="form-control" required
+                                                   v-model="cliente.nit" />
                                         </div>
                                     </div>
 
                                     <div class="row">
                                         <div class="col form-outline mb-4">
                                             <label class="form-label" for="nombres">Nombres:</label>
-                                            <input type="text" id="nombres" name="nombres" class="form-control"
-                                                   required v-model="user.nombres"/>
+                                            <input type="text" id="nombres" name="nombres" class="form-control" required
+                                                   v-model="cliente.nombres" />
                                         </div>
 
                                         <div class="col form-outline mb-4">
                                             <label class="form-label" for="apellidos">Apellido:</label>
                                             <input type="text" id="apellidos" name="apellidos" class="form-control"
-                                                   required v-model="user.apellidos"/>
+                                                   required v-model="cliente.apellidos" />
                                         </div>
                                     </div>
 
                                     <div class="row">
                                         <div class="col form-outline mb-4">
                                             <label class="form-label" for="email">Correo Electronico:</label>
-                                            <input type="email" id="email" name="email" class="form-control"
-                                                   required v-model="user.email"/>
+                                            <input type="email" id="email" name="email" class="form-control" required
+                                                   v-model="cliente.email" />
                                         </div>
 
                                         <div class="col form-outline mb-4">
                                             <label class="form-label" for="fecha_nacimiento">Fecha Nacimiento:</label>
                                             <input type="date" id="fecha_nacimiento" name="fecha_nacimiento"
-                                                   class="form-control"
-                                                   required v-model="user.fecha_nacimiento"/>
+                                                   class="form-control" required v-model="cliente.fecha_nacimiento" />
                                         </div>
                                     </div>
 
 
                                     <div class="row">
                                         <div class="col form-outline mb-4">
-                                            <label class="form-label" for="telefono">Telefono:</label>
-                                            <input type="tel" id="telefono" name="telefono"
-                                                   class="form-control" required v-model="user.telefono"/>
+                                            <label class="form-label" for="telefono">Teléfono:</label>
+                                            <input type="tel" id="telefono" name="telefono" class="form-control"
+                                                   required v-model="cliente.telefono" />
                                         </div>
 
                                         <div class="col form-outline mb-4">
-                                            <label class="form-label" for="telefono_trabajo">Telefono Trabajo:</label>
+                                            <label class="form-label" for="telefono_trabajo">Teléfono Trabajo:</label>
                                             <input type="tel" id="telefono_trabajo" name="telefono_trabajo"
-                                                   class="form-control" v-model="user.telefono_trabajo"/>
+                                                   class="form-control" v-model="cliente.telefono_trabajo" />
                                         </div>
                                     </div>
 
 
                                     <div class="form-outline mb-4">
-                                        <label class="form-label" for="direccion">Direccion:</label>
+                                        <label class="form-label" for="direccion">Dirección:</label>
                                         <textarea class="form-control" id="direccion" name="direccion" required
-                                                  v-model="user.direccion">
+                                                  v-model="cliente.direccion">
                                         </textarea>
                                     </div>
 
@@ -89,20 +94,14 @@
                                             <label class="form-label">Genero:</label>
                                             <div class="form-check">
                                                 <input class="form-check-input" type="radio" name="genero"
-                                                       v-model="user.genero"
-                                                       id="rMasculino"
-                                                       required
-                                                       value="M">
+                                                       v-model="cliente.genero" id="rMasculino" required value="M">
                                                 <label class="form-check-label" for="rMasculino">
                                                     Hombre
                                                 </label>
                                             </div>
                                             <div class="form-check">
                                                 <input class="form-check-input" type="radio" name="genero"
-                                                       id="rFemenino"
-                                                       v-model="user.genero"
-                                                       required
-                                                       value="F">
+                                                       id="rFemenino" v-model="cliente.genero" required value="F">
                                                 <label class="form-check-label" for="rFemenino">
                                                     Mujer
                                                 </label>
@@ -113,27 +112,21 @@
                                             <label class="form-label">Estado Civil:</label>
                                             <div class="form-check">
                                                 <input class="form-check-input" type="radio" name="estado_civi"
-                                                       id="rSoltero" value="Soltero"
-                                                       v-model="user.estado_civil"
-                                                       required>
+                                                       id="rSoltero" value="Soltero" v-model="cliente.estado_civil" required>
                                                 <label class="form-check-label" for="rSoltero">
                                                     Soltero
                                                 </label>
                                             </div>
                                             <div class="form-check">
                                                 <input class="form-check-input" type="radio" name="estado_civi"
-                                                       v-model="user.estado_civil"
-                                                       id="rCasado"
-                                                       value="Casado"
-                                                       required>
+                                                       v-model="cliente.estado_civil" id="rCasado" value="Casado" required>
                                                 <label class="form-check-label" for="rCasado">
                                                     Casado
                                                 </label>
                                             </div>
                                             <div class="form-check">
                                                 <input class="form-check-input" type="radio" name="estado_civi"
-                                                       id="rDivorciado" value="Divorciado"
-                                                       v-model="user.estado_civil"
+                                                       id="rDivorciado" value="Divorciado" v-model="cliente.estado_civil"
                                                        required>
                                                 <label class="form-check-label" for="rDivorciado">
                                                     Divorciado
@@ -141,10 +134,7 @@
                                             </div>
                                             <div class="form-check">
                                                 <input class="form-check-input" type="radio" name="estado_civi"
-                                                       id="rViudo"
-                                                       value="Viudo"
-                                                       v-model="user.estado_civil"
-                                                       required>
+                                                       id="rViudo" value="Viudo" v-model="cliente.estado_civil" required>
                                                 <label class="form-check-label" for="rViudo">
                                                     Viudo
                                                 </label>
@@ -152,24 +142,34 @@
                                         </div>
                                     </div>
 
+                                    <div class="row">
+                                        <div class="col form-outline mb-4">
+                                            <label class="form-label" for="password">Contraseña:</label>
+                                            <input type="password" id="password" name="password" class="form-control" required
+                                                   v-model="cliente.password" />
+                                        </div>
+
+                                        <div class="col form-outline mb-4">
+                                            <label class="form-label" for="password_confirm">Repetir Contraseña:</label>
+                                            <input type="password" id="password_confirm" name="password_confirm"
+                                                   class="form-control" required v-model="cliente.password_confirmation" />
+                                        </div>
+                                    </div>
+
 
                                     <div class="text-center pt-1 mb-5 pb-1">
                                         <button class="btn btn-block fa-lg gradient-custom-2 mb-3 mx-3
-                                                        text-white"
-                                                type="submit">
-                                            Registrarse
+                                                        text-white" :disabled="processing" @click="login">
+                                            {{ processing ? "Espere" : "Registrarse" }}
                                         </button>
-                                        <button class="btn btn-outline-secondary btn-block fa-lg mb-3"
-                                                type="Reset">
+                                        <button class="btn btn-outline-secondary btn-block fa-lg mb-3" type="Reset">
                                             Limpiar
                                         </button>
                                     </div>
 
                                     <div class="d-flex align-items-center justify-content-center pb-4">
-                                        <p class="mb-0 me-2">¿Ya tienes una cuenta?</p>
-                                        <button type="button" class="btn btn-outline-danger">Login</button>
+                                        <label>¿Ya tienes una cuenta? <router-link :to="{name:'login'}">Login</router-link></label>
                                     </div>
-
                                 </form>
 
                             </div>
@@ -189,11 +189,14 @@
         </div>
     </div>
 </template>
+
 <script>
+import { mapActions } from 'vuex'
 export default {
-    data() {
+    name:'register',
+    data(){
         return {
-            user: {
+            cliente:{
                 dui: '',
                 nit: '',
                 nombres: '',
@@ -204,49 +207,35 @@ export default {
                 direccion: '',
                 genero: '',
                 estado_civil: '',
-            }
-        };
-    },
-    methods: {
-        onSubmit(e) {
-            console.log(this.user);
-            /*this.axios.post('http://127.0.0.1:8000/api/register', this.user)
-                .then(({data}) => {
-                    //this.$router.push('/login');
-                    console.log("Llego")
-                })
-                .catch((error) => {
-                    console.log(error);
-                });*/
+                password: '',
+                password_confirmation: ''
+            },
+            validationErrors:{},
+            processing:false
         }
     },
+    methods:{
+        ...mapActions({
+            signIn:'auth/login'
+        }),
+        async registerCliente(){
+            this.processing = true
+            console.log(this.cliente);
+            await axios.post('http://127.0.0.1:8000/api/usuario/register',this.cliente).then(response=>{
+                this.validationErrors = {}
+                console.log(response);
+                //this.signIn()
+            }).catch(({response})=>{
+                if(response.status===422){
+                    this.validationErrors = response.data.data
+                }else{
+                    this.validationErrors = {}
+                    alert(response.data.message)
+                }
+            }).finally(()=>{
+                this.processing = false
+            })
+        },
+    }
 }
 </script>
-<style>
-
-@import url('https://fonts.googleapis.com/css2?family=Bangers&display=swap');
-
-.gradient-custom-2 {
-    /* fallback for old browsers */
-    background: #fccb90;
-
-    /* Chrome 10-25, Safari 5.1-6 */
-    background: -webkit-linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);
-
-    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-    background: linear-gradient(to right, #ee7724, #d8363a, #dd3675, #b44593);
-}
-
-@media (min-width: 768px) {
-    .gradient-form {
-        height: 100vh !important;
-    }
-}
-
-@media (min-width: 769px) {
-    .gradient-custom-2 {
-        border-top-right-radius: .3rem;
-        border-bottom-right-radius: .3rem;
-    }
-}
-</style>
