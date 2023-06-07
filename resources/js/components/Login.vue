@@ -11,10 +11,10 @@
                                     <img src="images/Icono.png" style="width: 185px;" alt="logo">
                                     <h4 class="mt-1 mb-2 pb-1">Secure Bank</h4>
                                 </div>
-                                <div class="text-center">
-                                    <p class="fs-5">Inicia Sesión Aquí</p>
-                                </div>
                                 <form v-if="mensajeEnviado === false" action="javascript:void(0)" method="post">
+                                    <div class="text-center">
+                                        <p class="fs-5">Inicia Sesión Aquí</p>
+                                    </div>
                                     <div class="col-12" v-if="Object.keys(validationErrors).length > 0 && typeof validationErrors === 'object'">
                                         <div class="alert alert-danger">
                                             <ul class="mb-0">
@@ -51,8 +51,8 @@
                                 </form>
 
                                 <form v-if="mensajeEnviado === true" action="javascript:void(0)" method="post">
-                                    <div class="col-12" v-if="Object.keys(validationErrorsSms).length > 0">
-                                        <div class="alert alert-danger">
+                                    <div class="col-12" v-if="Object.keys(validationErrorsSms).length > 0 && typeof validationErrorsSms === 'object'">
+                                        <div class="alert">
                                             <ul class="mb-0">
                                                 <li v-for="(value, key) in validationErrorsSms" :key="key">
                                                     {{ value[0] }}
@@ -60,8 +60,19 @@
                                             </ul>
                                         </div>
                                     </div>
+                                    <div class="col-12" v-if="Object.keys(validationErrorsSms).length > 0 && typeof validationErrorsSms === 'string'">
+                                        <div class="alert">
+                                            {{validationErrorsSms}}
+                                        </div>
+                                    </div>
+
+                                    <div class="my-3">
+                                        <p>
+                                            Se ha enviado un codigo de 6 digitos al numero {{this.usuario.telefono_secret}}
+                                        </p>
+                                    </div>
                                     <div class="form-outline mb-4">
-                                        <label for="email" class="form-label">SMS</label>
+                                        <label for="email" class="form-label">Codigo</label>
                                         <input type="text" class="form-control" v-model="usuario.code">
                                     </div>
                                     <div class="text-center pt-1 mb-5 pb-1">
@@ -105,12 +116,14 @@ export default {
                 code: "",
                 email: "",
                 password: "",
-                verification_sid: ""
+                verification_sid: "",
+                telefono_secret: ""
             },
             validationErrors: {},
             validationErrorsSms: {},
             processing: false,
             mensajeEnviado: false,
+
         }
     },
     methods: {
@@ -122,12 +135,15 @@ export default {
             await axios.post('http://127.0.0.1:8000/api/usuario/sms', this.auth).then((response) => {
                 //this.signIn()
                 console.log(response);
-                /*this.mensajeEnviado = true;
                 this.usuario.verification_sid = response.data.data.verification_sid;
+                this.usuario.telefono_secret = response.data.data.telefono_secret;
                 this.usuario.email = this.auth.email;
-                this.usuario.password = this.auth.password;*/
+                this.usuario.password = this.auth.password;
+
+                // Muestra el form de validacion
+                this.mensajeEnviado = true;
             }).catch(({response}) => {
-                if (response.status === 500) {
+                if (response.status === 422) {
                     this.validationErrors = response.data.data;
                     alert(response.data.message);
                 } else {
@@ -139,12 +155,13 @@ export default {
             });
         },
         async validarTwillo() {
+            this.processing = true;
             await axios.post('http://127.0.0.1:8000/api/usuario/login',this.usuario).then((response)=>{
-                //this.signIn()
+                this.signIn()
                 console.log(response);
             }).catch(({response})=>{
                 console.error(response.data);
-                if(response.status===500){
+                if(response.status===401 || response.status === 422){
                     this.validationErrorsSms = response.data.data;
                     alert(response.data.message);
                 }else{

@@ -138,7 +138,7 @@ class AuthController extends BaseController
                     $twilio = new Client($sid, $token);
 
                     //Enviamos el SMS
-                    $verification = $twilio->verify->v2->services("VAc9d9e734d582f59b69b541efb82e3078")
+                    $verification = $twilio->verify->v2->services("VA157fa2a46260742e82182155fc34a906")
                         ->verifications
                         ->create("+503" . Crypt::decryptString($cliente->telefono), "sms");
 
@@ -187,7 +187,7 @@ class AuthController extends BaseController
                     $token = getenv("TWILIO_AUTH_TOKEN");
                     $twilio = new Client($sid, $token);
 
-                    $verification_check = $twilio->verify->v2->services("VAc9d9e734d582f59b69b541efb82e3078")
+                    $verification_check = $twilio->verify->v2->services("VA157fa2a46260742e82182155fc34a906")
                         ->verificationChecks
                         ->create([
                                 "code" => $input['code'],
