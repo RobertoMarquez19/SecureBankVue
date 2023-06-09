@@ -5,3 +5,60 @@ $body-bg: #f8fafc;
 $font-family-sans-serif: 'Nunito', sans-serif;
 $font-size-base: 0.9rem;
 $line-height-base: 1.6;
+
+@import url('https://fonts.googleapis.com/css2?family=League Spartan');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat');
+.text{
+    font-family: 'League Spartan';
+}
+.text2{
+    font-family: 'Montserrat';
+}
+.box {
+    height: 170px;
+  }  
+.sombra{
+    margin-top: -100px;
+    box-shadow: 0px 10px 10px -3px black;
+}
+img.izquierda {
+    float: left;
+  }
+  
+  img.derecha {
+    float: right;
+  }
+.gradient-custom-2 {
+    /* fallback for old browsers */
+    background: #fccb90;
+
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: -webkit-linear-gradient(to right, #CF3125, #F7931D, #2A499F);
+
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: linear-gradient(to right, #CF3125, #F7931D, #2A499F);
+}
+.gradient-custom {
+    /* fallback for old browsers */
+    background: #fccb90;
+
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: -webkit-linear-gradient(to right, #CF3125, #F7931D, #2A499F);
+
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: linear-gradient(to right, #CF3125, #F7931D, #2A499F);
+}
+
+@media (min-width: 768px) {
+    .gradient-form {
+        height: 100vh !important;
+    }
+}
+
+@media (min-width: 769px) {
+    .gradient-custom-2 {
+        border-top-right-radius: .3rem;
+        border-bottom-right-radius: .3rem;
+    }
+
+}
