@@ -1,20 +1,18 @@
 <template>
-    <div class="container py-5 h-100">
+    <div class="box align-items-center text-center gradient-custom">
+        <br>
+        <div>
+        <h4 class="text  text-light"><img src="images/icono.png" style="width: 50px;" alt="logo" >
+            Creá una cuenta</h4>
+    </div>
+    </div>
+    <div class="container py-3 h-100 ">
         <div class="row d-flex justify-content-center align-items-center h-100">
             <div class="col-xl-12">
-                <div class="card rounded-1 text-black">
+                <div class="card mx-4 mx-md-5 shadow-5-strong sombra">
                     <div class="row g-0">
-                        <div class="col-lg-6">
                             <div class="card-body p-md-5 mx-md-4">
-
-                                <div class="text-center">
-                                    <img src="images/Icono.png" style="width: 185px;" alt="logo">
-                                    <h4 class="mt-1 mb-2 pb-1">Secure Bank</h4>
-                                </div>
-                                <div class="text-center">
-                                    <p class="fs-5">Crea tu cuenta aquí</p>
-                                </div>
-                                <form form action="javascript:void(0)" @submit="registerCliente" class="row" method="post">
+                                <form form action="javascript:void(0)" @submit="registerCliente" class="row text2" method="post">
                                     <div class="col-12" v-if="Object.keys(validationErrors).length > 0">
                                         <div class="alert alert-danger">
                                             <ul class="mb-0">
@@ -23,6 +21,7 @@
                                             </ul>
                                         </div>
                                     </div>
+                                    <h5 class="text text-center ">¿Ya te registraste?Ingresá</h5><br><br>
                                     <div class="row">
                                         <div class="col form-outline mb-4">
                                             <label class="form-label" for="dui">DUI:</label>
@@ -162,7 +161,7 @@
                                                         text-white" :disabled="processing" @click="login">
                                             {{ processing ? "Espere" : "Registrarse" }}
                                         </button>
-                                        <button class="btn btn-outline-secondary btn-block fa-lg mb-3" type="Reset">
+                                        <button class="btn gradient-custom-2 text-light btn-block fa-lg mb-3" type="Reset">
                                             Limpiar
                                         </button>
                                     </div>
@@ -173,16 +172,15 @@
                                 </form>
 
                             </div>
-                        </div>
-                        <div class="col-lg-6 d-flex align-items-center gradient-custom-2 rounded-1">
+                        <!--<div class="col-lg-6 d-flex align-items-center gradient-custom-2 rounded-1">
                             <div class="text-white px-3 py-4 p-md-5 mx-md-4">
-                                <h4 class="mb-4">SEGURIDAD Y FINANZAS DE LAS MANOS 🔐</h4>
-                                <p class="fst-italic mb-0">
+                                <h4 class="mb-4 text">SEGURIDAD Y FINANZAS DE LAS MANOS 🔐</h4>
+                                <p class="fst-italic mb-0 text2">
                                     Preocupate en administrar tu dinero a tu estilo 💸 mientras nosotros
                                     nos aseguraremos en que tus transacciones sean lo mas seguras, rapidas y eficientes.
                                 </p>
                             </div>
-                        </div>
+                        </div>-->
                     </div>
                 </div>
             </div>
