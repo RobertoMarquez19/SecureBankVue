@@ -15,7 +15,8 @@ return new class extends Migration
         Schema::create('cuenta_bancarias', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('numero_cuenta')->unique()->nullable(false);
+            $table->text('numero_cuenta')->nullable(false);
+            $table->string('numero_cuenta_hash')->unique()->nullable(false);
             $table->double('monto_cuenta')->nullable(false);
             $table->dateTime('fecha_apertura')->nullable(false)->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->enum('estado_cuenta',['activa','cerrada','bloqueada','inactiva']);

@@ -90,18 +90,19 @@ class AuthController extends BaseController
 
                     if ($usuario->save()) {
                         DB::commit();
-                        return $this->sendResponse("Exito", "Usuario creado exitosamente");
+                        $usuario->sendEmailVerificationNotification();
+                        return $this->sendResponse("Exito", "Usuario creado exitosamente, se ha enviado un enlace de verificacion a su correo electronico");
                     } else {
                         DB::rollBack();
-                        return $this->sendError("Error inesperado", "Ocurrio un error al crear el usuario",500);
+                        return $this->sendError("Error inesperado", ["Ocurrio un error al crear el usuario"], 500);
                     }
                 } else {
                     DB::rollBack();
-                    return $this->sendError("Error inesperado", "Ocurrio un error al crear al cliente",500);
+                    return $this->sendError("Error inesperado", ["Ocurrio un error al crear al cliente"], 500);
                 }
             }
         } catch (Exception $e) {
-            return $this->sendError($e->getMessage(), "Ocurrio un error inesperado, estamos trabajando en solventarlo lo antes posible", 500);
+            return $this->sendError("Fatal Error", $e->getMessage(), 500);
         }
     }
 
@@ -110,14 +111,12 @@ class AuthController extends BaseController
         try {
             $validator = Validator::make($request->all(), [
                 'email' => 'required|email',
-                'password' => 'required'
+                'password' => 'required|min:8'
             ],
                 [
                     'email.required' => 'El campo email es requerido',
                     'email.email' => 'El campo email debe ser una direccion de correo electronico valido',
-                    'email.unique' => 'Este correo electronico ya se encuentra en uso',
                     'password.required' => 'El campo contraseña es requerido',
-                    'password.confirmed' => 'Las contraseñas no coinciden',
                     'password.min' => 'La contraseña debe tener como minimo 8 caracteres',
                 ]);
 
@@ -126,36 +125,41 @@ class AuthController extends BaseController
             } else {
                 $input = $request->all();
                 if (Auth::attempt($input)) {
-                    //Credenciales correctas, obtenemos el numero telefonico del usuario
-                    $cliente = User::find(Auth::id())->cliente;
 
-                    //Generamos un template de numero al que se envio el codigo
-                    $replaceValue = str_repeat("X", 5);
-                    $telefono_secret = substr_replace(Crypt::decryptString($cliente->telefono), $replaceValue, 0, 5);
+                    if (Auth::user()->hasVerifiedEmail()) {
+                        //Credenciales correctas, obtenemos el numero telefonico del usuario
+                        $cliente = User::find(Auth::id())->cliente;
 
-                    $sid = getenv("TWILIO_ACCOUNT_SID");
-                    $token = getenv("TWILIO_AUTH_TOKEN");
-                    $twilio = new Client($sid, $token);
+                        //Generamos un template de numero al que se envio el codigo
+                        $replaceValue = str_repeat("X", 5);
+                        $telefono_secret = substr_replace(Crypt::decryptString($cliente->telefono), $replaceValue, 0, 5);
 
-                    //Enviamos el SMS
-                    $verification = $twilio->verify->v2->services("VA157fa2a46260742e82182155fc34a906")
-                        ->verifications
-                        ->create("+503" . Crypt::decryptString($cliente->telefono), "sms");
+                        $sid = getenv("TWILIO_ACCOUNT_SID");
+                        $token = getenv("TWILIO_AUTH_TOKEN");
+                        $twilio = new Client($sid, $token);
 
-                    $suceess['telefono_secret'] = "+503 " . $telefono_secret;
-                    $suceess['verification_sid'] = $verification->sid;
-                    //Informamos que hemos enviado el mensaje al usuario
-                    return $this->sendResponse($suceess, "Mensaje enviado al numero telefonico vinculado al usuario");
+                        //Enviamos el SMS
+                        $verification = $twilio->verify->v2->services("VA157fa2a46260742e82182155fc34a906")
+                            ->verifications
+                            ->create("+503" . Crypt::decryptString($cliente->telefono), "sms");
+
+                        $suceess['telefono_secret'] = "+503 " . $telefono_secret;
+                        $suceess['verification_sid'] = $verification->sid;
+                        //Informamos que hemos enviado el mensaje al usuario
+                        return $this->sendResponse($suceess, "Mensaje enviado al numero telefonico vinculado al usuario");
+                    } else {
+                        return $this->sendError("Unauthorized", ["Su cuenta de correo electronico no ha sido verificada"], 401);
+                    }
                 } else {
-                    return $this->sendError("Credenciales incorrectas", 'Unauthorized', 401);
+                    return $this->sendError("Unauthorized", ['Credenciales incorrectas'], 401);
                 }
 
             }
 
         } catch (RestException $e) {
-            return $this->sendError($e->getMessage(), "Ocurrio on error con Twilio", 401);
+            return $this->sendError("SMS Error", ["La verificacion por SMS ya ha expirado"], 401);
         } catch (Exception $e) {
-            return $this->sendError($e->getMessage(), "Ocurrio un error inesperado, estamos trabajando en solventarlo lo antes posible", 500);
+            return $this->sendError("Fatal Error", ["Ocurrio un error inesperado, estamos trabajando en solventarlo lo antes posible"], 500);
         }
 
     }
@@ -166,13 +170,12 @@ class AuthController extends BaseController
             $validator = Validator::make($request->all(), [
                 'code' => 'required|min:6|max:6',
                 'email' => 'required|email',
-                'password' => 'required',
+                'password' => 'required|min:8',
                 'verification_sid' => 'required'
             ],
                 [
                     'email.required' => 'El campo email es requerido',
                     'email.email' => 'El campo email debe ser una direccion de correo electronico valido',
-                    'email.unique' => 'Este correo electronico ya se encuentra en uso',
                     'password.required' => 'El campo contraseña es requerido',
                     'password.confirmed' => 'Las contraseñas no coinciden',
                     'password.min' => 'La contraseña debe tener como minimo 8 caracteres',
@@ -201,24 +204,28 @@ class AuthController extends BaseController
 
                     switch ($verification_check->status) {
                         case 'pending':
-                            return $this->sendError("Codigo incorrecto", "El codigo ingresado no es valido", 401);
+                            return $this->sendError("Codigo incorrecto", ["El codigo ingresado no es valido"], 401);
 
                         case 'approved':
+                            $cliente = User::find(Auth::id())->cliente;
                             $success['token'] = Auth::user()->createToken('SecureBank')->accessToken;
+                            $success['nombres']=$cliente->nombres;
+                            $success['apellidos']=$cliente->apellidos;
+                            $success['correo_electronico']=Crypt::decryptString($cliente->email);
                             return $this->sendResponse($success, 'Bienvenido a SecureBank');
 
                         default:
-                            return $this->sendError("Estado invalido", 'El estado del codigo es desconocido', 500);
+                            return $this->sendError("Estado invalido", ['El estado del codigo es desconocido'], 500);
                     }
 
                 } else {
-                    return $this->sendError("Credenciales incorrectas", 'Unauthorized', 401);
+                    return $this->sendError("Unauthorized", ['Credenciales incorrectas'], 401);
                 }
             }
         } catch (RestException $e) {
-            return $this->sendError($e->getMessage(), "La verificacion por SMS ya ha expirado", 401);
+            return $this->sendError("SMS Error", ["La verificacion por SMS ya ha expirado"], 401);
         } catch (Exception $e) {
-            return $this->sendError($e->getMessage(), "Ocurrio un error inesperado, estamos trabajando en solventarlo lo antes posible", 500);
+            return $this->sendError("Fatal Error", ["Ocurrio un error inesperado, estamos trabajando en solventarlo lo antes posible"], 500);
         }
     }
 }
