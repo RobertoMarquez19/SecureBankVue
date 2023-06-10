@@ -21,7 +21,8 @@ Route::post('usuario/login', [\App\Http\Controllers\API\AuthController::class, '
 Route::get('email/verify/{id}', [\App\Http\Controllers\API\VerificationController::class,'verify'])->name('verification.verify');
 Route::get('email/resend',  [\App\Http\Controllers\API\VerificationController::class,'resend'])->name('verification.resend');
 
-Route::middleware(['auth:api','verfied'])->group( function () {
+Route::middleware(['auth:api'])->group( function () {
     //Rutas productos
-    Route::get("cliente/cuentas",[\App\Http\Controllers\API\CuentaBancariaController::class,'cuentas']);
+    Route::post("cliente/cuentas",[\App\Http\Controllers\API\CuentaBancariaController::class,'store']);
+    Route::get('cliente/cuentas',[\App\Http\Controllers\API\CuentaBancariaController::class,'cuentasByCliente']);
 });

@@ -16,6 +16,8 @@ return new class extends Migration
             $table->timestamps();
             $table->unsignedBigInteger('from_cuenta_id')->nullable(false);
             $table->unsignedBigInteger('to_factura_id')->nullable(false);
+            $table->double('cuenta_monto_antes')->nullable(false);
+            $table->double('cuenta_monto_despues')->nullable(false);
             $table->unique(['from_cuenta_id','to_factura_id']);
             $table->foreign('from_cuenta_id')->references('id')->on('cuenta_bancarias');
             $table->foreign('to_factura_id')->references('id')->on('facturas');

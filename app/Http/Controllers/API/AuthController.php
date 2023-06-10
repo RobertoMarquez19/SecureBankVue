@@ -143,10 +143,10 @@ class AuthController extends BaseController
                             ->verifications
                             ->create("+503" . Crypt::decryptString($cliente->telefono), "sms");
 
-                        $suceess['telefono_secret'] = "+503 " . $telefono_secret;
-                        $suceess['verification_sid'] = $verification->sid;
+                        $success['telefono_secret'] = "+503 " . $telefono_secret;
+                        $success['verification_sid'] = $verification->sid;
                         //Informamos que hemos enviado el mensaje al usuario
-                        return $this->sendResponse($suceess, "Mensaje enviado al numero telefonico vinculado al usuario");
+                        return $this->sendResponse($success, "Mensaje enviado al numero telefonico vinculado al usuario");
                     } else {
                         return $this->sendError("Unauthorized", ["Su cuenta de correo electronico no ha sido verificada"], 401);
                     }

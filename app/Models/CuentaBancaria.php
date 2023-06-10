@@ -11,6 +11,10 @@ class CuentaBancaria extends Model
 
     protected $table = 'cuenta_bancarias';
 
-    protected $fillable = ['numero_cuenta','monto_cuenta','fecha_apertura','estado_cuenta','id_producto','id_cliente'];
+    protected $fillable = ['numero_cuenta','numero_cuenta_hash','monto_cuenta','fecha_apertura','estado_cuenta','id_producto','id_cliente'];
 
+    public function cliente()
+    {
+        return $this->belongsTo(Cliente::class,'id_cliente');
+    }
 }
