@@ -1,42 +1,39 @@
-import axios from 'axios'
-import router from '@/router'
+import axios from 'axios';
+import router from "@/router/index.js";
 
-export default {
-    namespaced: true,
-    state:{
-        authenticated:false,
-        user:{}
-    },
-    getters:{
-        authenticated(state){
-            return state.authenticated
-        },
-        user(state){
-            return state.user
-        }
-    },
-    mutations:{
-        SET_AUTHENTICATED (state, value) {
-            state.authenticated = value
-        },
-        SET_USER (state, value) {
-            state.user = value
-        }
-    },
-    actions:{
-        login({commit}){
-            return axios.get('/api/user').then(({data})=>{
-                commit('SET_USER',data)
-                commit('SET_AUTHENTICATED',true)
-                router.push({name:'dashboard'})
-            }).catch(({response:{data}})=>{
-                commit('SET_USER',{})
-                commit('SET_AUTHENTICATED',false)
-            })
-        },
-        logout({commit}){
-            commit('SET_USER',{})
-            commit('SET_AUTHENTICATED',false)
+class Auth {
+    constructor() {
+        this.token = window.localStorage.getItem('token');
+        let userData = window.localStorage.getItem('user');
+        this.user = userData ? JSON.parse(userData) : null;
+        if (this.token) {
+            axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.token;
         }
     }
+
+    login(token, user) {
+        window.localStorage.setItem('token', token);
+        window.localStorage.setItem('user', JSON.stringify(user));
+        axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+        this.token = token;
+        this.user = user;
+        router.push({name: 'dashboard'});
+    }
+
+    check() {
+        return !!this.token;
+    }
+
+    logout() {
+        // window.localStorage.clear();
+        window.localStorage.removeItem('token');
+        window.localStorage.removeItem('user');
+        this.user = null;
+        router.push({
+            name: 'login',
+            replace: true,
+        });
+    }
 }
+
+export default new Auth();
