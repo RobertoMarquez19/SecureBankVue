@@ -132,7 +132,9 @@ export default {
         }
     },
     methods: {
-        // TODO: Boton de retroceder en vista de mensaje de texto, en caso de error.
+        // TODO: Boton de retroceder en login que pondra la variable this.mensajeEnviado en false
+        // TODO: Para mostrar nuevamente el form de correo y contraseña, y solicitar el mensaje
+        // TODO: Agregar mascaras a los campos, con placeholders
         async login() {
             this.processing = true
             await axios.post('http://127.0.0.1:8000/api/usuario/sms', this.auth).then((response) => {
