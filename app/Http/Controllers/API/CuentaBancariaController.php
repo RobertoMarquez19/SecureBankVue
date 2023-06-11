@@ -34,17 +34,19 @@ class CuentaBancariaController extends BaseController
                 return $this->sendError("Error inesperado", ["Ocurrio un error al crear su cuenta"], 500);
             }
         }catch (Exception $e) {
-            return $this->sendError("Fatal Error", ["Ocurrio un error inesperado, estamos trabajando en solventarlo lo antes posible"], 500);
+            return $this->sendError($e->getMessage(), ["Ocurrio un error inesperado, estamos trabajando en solventarlo lo antes posible"], 500);
         }
     }
 
     public function checkCuentaExiste(Request $request){
         try {
             $validator = Validator::make($request->all(), [
-                'cuenta_destino' => 'required',
+                'cuenta_destino' => 'required|max:20|min:20'
             ],
                 [
-                    'cuenta_destino' => 'El codigo de cuenta es requerido',
+                    'cuenta_destino.required' => 'El codigo de cuenta es requerido',
+                    'cuenta_destino.min'=>'El numero de cuenta debe tener 20 caracteres como minimo',
+                    'cuenta_destino.max'=>'El numero de cuenta debe tener 20 caracteres como maximo'
                 ]);
 
             if($validator->fails()){

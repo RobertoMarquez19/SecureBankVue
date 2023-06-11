@@ -28,4 +28,11 @@ class CuentaBancaria extends Model
     public function tarjetas(){
         return $this->hasMany(TarjetaDebito::class,'id_cuenta');
     }
+
+    public function transaccionesCuentas():HasMany{
+        return $this->hasMany(TransaccionesCuentas::class, 'from_cuenta_id', 'id')
+            ->select('*')
+            ->union($this->hasMany(TransaccionesCuentas::class, 'to_cuenta_id', 'id')->select('*'))
+            ->orderBy('created_at','desc');
+    }
 }
