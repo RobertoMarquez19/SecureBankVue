@@ -42,22 +42,24 @@ export default {
                     text: mensajeError
                 });
             });
+        },
+
+        showTransferenciaModal(cuenta){
+
         }
     }
 }
 </script>
 
 <template>
-    <h1 class="text-center">Cuentas disponibles Secure Bank</h1>
-
-    <p>Aqui tienes todas tus cuentas disponibles con nosotros</p>
+    <h1 class="text-center">Cuentas</h1>
 
     <form @submit.prevent="crearCuenta()" class="row row-cols-lg-auto g-3 align-items-center">
         <div class="col-12">
             <span class="align-middle">¿No tienes una cuenta? Puedes crearla aqui</span>
         </div>
         <div class="col-12">
-            <button type="submit" class="btn btn-primary">Crear Cuenta</button>
+            <button type="submit" class="btn gradient-custom-2 btn col m-1 text-white">Crear Cuenta</button>
         </div>
     </form>
 
@@ -68,7 +70,7 @@ export default {
             <div class="col-sm-6 mt-3 mb-3 mb-sm-0" v-for="(cuenta, index) in cuentas" :key="cuenta.id">
                 <div class="card" data-bs-toggle="collapse" :data-bs-target="`#collapse-cuenta-`+cuenta.id" aria-expanded="false" :aria-controls="`collapse-cuenta-`+cuenta.id">
                     <div class="card-header fw-bold">
-                        <i class="bi bi-piggy-bank"></i> {{cuenta.numero_cuenta}} Cuenta de Ahorro
+                        <i class="bi bi-piggy-bank"></i> {{cuenta.numero_cuenta}}
                     </div>
                     <div class="card-body">
                         <h5 class="card-title fw-bold">${{cuenta.monto}}</h5>
@@ -79,10 +81,14 @@ export default {
                     </div>
 
                     <div class="collapse" :id="`collapse-cuenta-`+cuenta.id">
-                        <div class="container row">
-                            <button type="button" class="btn btn-primary col-4 m-3">Transferencia</button>
-                            <button type="button" class="btn btn-primary col-4 m-3">Pagar servicio</button>
-                            <button type="button" class="btn btn-primary col-4 m-3">Movimientos</button>
+                        <div class="container text-center">
+                            <hr>
+                            <div class="row align-items-center justify-content-center m-1">
+                                <button type="button" class="gradient-custom-2 btn col m-1 text-white" v-on:click="showTransferenciaModal(cuenta)"><i class="bi bi-cash-coin"></i> Transferencia</button>
+                                <button type="button" class="gradient-custom-2 btn col m-1 text-white"><i class="bi bi-receipt"></i> Pagar servicio</button>
+                                <button type="button" class="gradient-custom-2 btn col m-1 text-white"><i class="bi bi-card-checklist"></i> Movimientos</button>
+                            </div>
+                            <hr>
                         </div>
                     </div>
                 </div>
