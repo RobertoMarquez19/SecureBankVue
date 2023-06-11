@@ -10,20 +10,20 @@
                                 <div class="text-center">
                                     <img src="images/sinslogan.png" style="width: 185px;" alt="logo">
                                 </div>
-                                <form v-if="mensajeEnviado === false" action="javascript:void(0)" method="post">
+                                <form v-if="mensajeEnviado === false" action="javascript:void(0)" @submit="login">
                                     <div class="text-center text">
                                         <p class="fs-5">Inicia Sesión Aquí</p>
                                     </div>
-                                    <div class="col-12"
-                                         v-if="Object.keys(validationErrors).length > 0 && typeof validationErrors === 'object'">
-                                        <div class="alert alert-danger">
-                                            <ul class="mb-0">
-                                                <li v-for="(value, key) in validationErrors" :key="key">
-                                                    {{ value[0] }}
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
+                                    <!--                                    <div class="col-12"-->
+                                    <!--                                         v-if="Object.keys(validationErrors).length > 0 && typeof validationErrors === 'object'">-->
+                                    <!--                                        <div class="alert alert-danger">-->
+                                    <!--                                            <ul class="mb-0">-->
+                                    <!--                                                <li v-for="(value, key) in validationErrors" :key="key">-->
+                                    <!--                                                    {{ value[0] }}-->
+                                    <!--                                                </li>-->
+                                    <!--                                            </ul>-->
+                                    <!--                                        </div>-->
+                                    <!--                                    </div>-->
                                     <div class="col-12"
                                          v-if="Object.keys(validationErrors).length > 0 && typeof validationErrors === 'string'">
                                         <div class="alert alert-danger">
@@ -32,15 +32,15 @@
                                     </div>
                                     <div class="form-outline mb-4">
                                         <label for="email" class="form-label text2">Correo</label>
-                                        <input type="email" class="form-control" v-model="auth.email">
+                                        <input type="email" required class="form-control" v-model="auth.email">
                                     </div>
                                     <div class="form-outline mb-4">
                                         <label for="password" class="form-label text2">Contraseña</label>
-                                        <input type="password" class="form-control" v-model="auth.password">
+                                        <input type="password" required class="form-control" v-model="auth.password">
                                     </div>
                                     <div class="text-center pt-1 mb-5 pb-1">
                                         <button class="btn btn-block fa-lg gradient-custom-2 mb-3 mx-3
-                                                        text-white" :disabled="processing" @click="login">
+                                                        text-white" :disabled="processing">
                                             {{ processing ? "Espere" : "Login" }}
                                         </button>
                                     </div>
@@ -108,6 +108,7 @@
 <script>
 
 import Auth from "@/store/auth.js";
+import Swal from 'sweetalert2/dist/sweetalert2';
 //import router from '@/router';
 export default {
     name: "login",
@@ -148,14 +149,44 @@ export default {
                 // Muestra el form de validacion
                 this.mensajeEnviado = true;
             }).catch(({response}) => {
-                if (response.status === 422) {
-                    this.validationErrors = response.data.data;
-                    alert(response.data.message);
-                } else {
-                    this.validationErrors = {}
-                    alert(response.data.message);
+                    console.error(response);
+                    let mensajeError = response.data.message;
+                    if (response.status === 422) {
+                        this.validationErrors = response.data.data[0];
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: mensajeError,
+                            footer: 'Revise las validaciones en el formulario'
+                        });
+                    } else if (response.status === 401) {
+                        this.validationErrors = response.data.data[0];
+                        if (this.validationErrors === "Credenciales incorrectas") {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: this.validationErrors
+                            });
+                        } else {
+                            // TODO: Invocar el metodo para reenviar el correo
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: this.validationErrors,
+                                footer: 'Recuerde revisar en la seccion de SPAM de su correo'
+                            });
+                        }
+                    } else {
+                        this.validationErrors = {}
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error ah ocurrido algo inesperado',
+                            text: mensajeError,
+                            footer: 'Estamos trabajando para resolverlo'
+                        });
+                    }
                 }
-            }).finally(() => {
+            ).finally(() => {
                 this.processing = false
             });
         },
@@ -176,12 +207,22 @@ export default {
                 //this.router.push('/');
             }).catch(({response}) => {
                 console.error(response.data);
+                let mensajeError = response.data.message;
                 if (response.status === 401 || response.status === 422) {
-                    this.validationErrorsSms = response.data.data;
-                    alert(response.data.message);
+                    this.validationErrors = response.data.data
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: mensajeError,
+                    });
                 } else {
-                    this.validationErrorsSms = {}
-                    alert(response.data.message);
+                    this.validationErrors = {}
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error ah ocurrido algo inesperado',
+                        text: mensajeError,
+                        footer: 'Estamos trabajando para resolverlo'
+                    });
                 }
             }).finally(() => {
                 this.processing = false
