@@ -30,7 +30,7 @@ class Auth {
         window.localStorage.removeItem('user');
         this.user = null;
         router.push({
-            name: 'login',
+            path: '/login',
             replace: true,
         });
     }
