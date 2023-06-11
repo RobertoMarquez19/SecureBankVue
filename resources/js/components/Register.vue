@@ -218,7 +218,7 @@ export default {
         async registerCliente() {
             this.processing = true
             console.log(this.cliente);
-            await axios.post('http://127.0.0.1:8000/api/usuario/register', this.cliente).then(response => {
+            await axios.post('usuario/register', this.cliente).then(response => {
                 this.validationErrors = {}
                 console.log(response);
                 let mensaje = response.data.message;

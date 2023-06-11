@@ -1,55 +1,79 @@
 <template>
-    <div>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="https://techvblogs.com/blog/spa-authentication-laravel-9-sanctum-vue3-vite" target="_blank">Secure Bank</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNavDropdown">
-                    <ul class="navbar-nav me-auto">
+    <div class="container-fluid">
+        <div class="row flex-nowrap">
+            <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-dark">
+                <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
+                    <span href="#"
+                       class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+                        <span class="fs-5 d-none d-sm-inline">Secure Bank</span>
+                    </span>
+                    <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start"
+                        id="menu">
                         <li class="nav-item">
-                            <router-link :to="{name:'dashboard'}" class="nav-link">Home <span class="sr-only">(current)</span></router-link>
-                        </li><li class="nav-item">
-                            <router-link :to="{name:'cuentas'}" class="nav-link">Cuentas<span class="sr-only"></span></router-link>
+                            <router-link :to="{name:'dashboard'}" class="nav-link align-middle px-0">
+                                <i class="fs-4 bi bi-house"></i> <span class="ms-1 d-none d-sm-inline">Home</span>
+                            </router-link>
+                        </li>
+                        <li class="nav-item">
+                            <router-link :to="{name:'cuentas'}" class="nav-link align-middle px-0">
+                                <i class="fs-4 bi bi-cash-coin"></i> <span class="ms-1 d-none d-sm-inline">Cuentas</span>
+                            </router-link>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link align-middle px-0">
+                                <i class="fs-4 bi bi-credit-card-2-back"></i> <span class="ms-1 d-none d-sm-inline">Tarjetas</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link align-middle px-0">
+                                <i class="fs-4 bi bi-currency-bitcoin"></i> <span class="ms-1 d-none d-sm-inline">Crypto</span>
+                            </a>
                         </li>
                     </ul>
-                    <div class="d-flex">
-                        <ul class="navbar-nav">
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    {{this.user.nombres}} {{this.user.apellidos}}
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
-                                    <!--<a class="dropdown-item" href="javascript:void(0)" @click="logout">Logout</a> -->
-                                    <a class="dropdown-item" href="javascript:void(0)" @click="logout">Logout</a>
-                                </div>
+                    <hr>
+                    <div class="dropdown pb-4">
+                        <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
+                           id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="images/profile.png" alt="Profile Picture" width="30" height="30"
+                                 class="rounded-circle">
+                            <span class="d-none d-sm-inline mx-1 text-wrap">{{this.user.nombres}} {{this.user.apellidos}}</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
+                            <li>
+                                <a class="dropdown-item" href="javascript:void(0)" @click="logout">Logout</a>
                             </li>
                         </ul>
                     </div>
                 </div>
             </div>
-        </nav>
-        <main class="mt-3">
-            <router-view></router-view>
-        </main>
+            <div class="col py-3">
+                <div class="mt-3">
+                    <router-view></router-view>
+                </div>
+            </div>
+        </div>
     </div>
+
 </template>
 
 <script>
 import Auth from "@/store/auth.js";
 
 export default {
-    name:"default-layout",
-    data(){
+    name: "default-layout",
+    data() {
         return {
             user: this.auth.user
         }
     },
-    methods:{
+    methods: {
         logout() {
             Auth.logout()
         }
     }
 }
 </script>
+
+<style>
+
+</style>

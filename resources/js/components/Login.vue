@@ -133,12 +133,12 @@ export default {
         }
     },
     methods: {
-        // TODO: Boton de retroceder en login que pondra la variable this.mensajeEnviado en false
-        // TODO: Para mostrar nuevamente el form de correo y contraseña, y solicitar el mensaje
-        // TODO: Agregar mascaras a los campos, con placeholders
+        // TODO : Boton de retroceder en login que pondra la variable this.mensajeEnviado en false
+        // TODO : Para mostrar nuevamente el form de correo y contraseña, y solicitar el mensaje
+        // TODO : Agregar mascaras a los campos, con placeholders
         async login() {
             this.processing = true
-            await axios.post('http://127.0.0.1:8000/api/usuario/sms', this.auth).then((response) => {
+            await axios.post('usuario/sms', this.auth).then((response) => {
                 //this.signIn()
                 console.log(response);
                 this.usuario.verification_sid = response.data.data.verification_sid;
@@ -168,7 +168,7 @@ export default {
                                 text: this.validationErrors
                             });
                         } else {
-                            // TODO: Invocar el metodo para reenviar el correo
+                            // TODO: Invocar el metodo para reenviar el correo podria ser con un alert
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Error',
@@ -192,7 +192,7 @@ export default {
         },
         async validarTwillo() {
             this.processing = true;
-            await axios.post('http://127.0.0.1:8000/api/usuario/login', this.usuario).then((response) => {
+            await axios.post('usuario/login', this.usuario).then((response) => {
                 console.log(response);
                 let dataResponse = response.data;
                 let {token} = dataResponse.data;
