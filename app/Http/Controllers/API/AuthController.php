@@ -139,7 +139,7 @@ class AuthController extends BaseController
                         $twilio = new Client($sid, $token);
 
                         //Enviamos el SMS
-                        $verification = $twilio->verify->v2->services("VA157fa2a46260742e82182155fc34a906")
+                        $verification = $twilio->verify->v2->services("VAc9d9e734d582f59b69b541efb82e3078")
                             ->verifications
                             ->create("+503" . Crypt::decryptString($cliente->telefono), "sms");
 
@@ -157,7 +157,7 @@ class AuthController extends BaseController
             }
 
         } catch (RestException $e) {
-            return $this->sendError("SMS Error", ["Ocurrio un error inesperado al enviar el codigo de verificacion"], 401);
+            return $this->sendError("SMS Error", ["Ocurrio un error inesperado al enviar el codigo de verificacion"], 500);
         } catch (Exception $e) {
             return $this->sendError("Fatal Error", ["Ocurrio un error inesperado, estamos trabajando en solventarlo lo antes posible"], 500);
         }
@@ -194,7 +194,7 @@ class AuthController extends BaseController
                     $token = getenv("TWILIO_AUTH_TOKEN");
                     $twilio = new Client($sid, $token);
 
-                    $verification_check = $twilio->verify->v2->services("VA157fa2a46260742e82182155fc34a906")
+                    $verification_check = $twilio->verify->v2->services("VAc9d9e734d582f59b69b541efb82e3078")
                         ->verificationChecks
                         ->create([
                                 "code" => $input['code'],
@@ -223,7 +223,7 @@ class AuthController extends BaseController
                 }
             }
         } catch (RestException $e) {
-            return $this->sendError("SMS Error", ["La verificacion por SMS ya ha expirado"], 401);
+            return $this->sendError("SMS Error", ["La verificacion por SMS ya ha expirado"], 50);
         } catch (Exception $e) {
             return $this->sendError("Fatal Error", ["Ocurrio un error inesperado, estamos trabajando en solventarlo lo antes posible"], 500);
         }

@@ -65,8 +65,8 @@ export default {
 
     <div class="container-sm">
         <div class="row">
-            <div class="col-sm-6 mb-3 mb-sm-0" v-for="(cuenta, index) in cuentas" :key="cuenta.numero_cuenta">
-                <div class="card">
+            <div class="col-sm-6 mt-3 mb-3 mb-sm-0" v-for="(cuenta, index) in cuentas" :key="cuenta.id">
+                <div class="card" data-bs-toggle="collapse" :data-bs-target="`#collapse-cuenta-`+cuenta.id" aria-expanded="false" :aria-controls="`collapse-cuenta-`+cuenta.id">
                     <div class="card-header fw-bold">
                         <i class="bi bi-piggy-bank"></i> {{cuenta.numero_cuenta}} Cuenta de Ahorro
                     </div>
@@ -76,6 +76,14 @@ export default {
                             Saldo Disponible
                             <p>N° {{cuenta.numero_cuenta}}</p>
                         </p>
+                    </div>
+
+                    <div class="collapse" :id="`collapse-cuenta-`+cuenta.id">
+                        <div class="container row">
+                            <button type="button" class="btn btn-primary col-4 m-3">Transferencia</button>
+                            <button type="button" class="btn btn-primary col-4 m-3">Pagar servicio</button>
+                            <button type="button" class="btn btn-primary col-4 m-3">Movimientos</button>
+                        </div>
                     </div>
                 </div>
             </div>

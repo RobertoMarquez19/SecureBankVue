@@ -109,6 +109,7 @@
 
 import Auth from "@/store/auth.js";
 import Swal from 'sweetalert2/dist/sweetalert2';
+import auth from "@/store/auth.js";
 //import router from '@/router';
 export default {
     name: "login",
@@ -168,12 +169,42 @@ export default {
                                 text: this.validationErrors
                             });
                         } else {
-                            // TODO: Invocar el metodo para reenviar el correo podria ser con un alert
-                            Swal.fire({
-                                icon: 'error',
+                            const swalWithCustomButtons = Swal.mixin({
+                                customClass:{
+                                    confirmButton:'btn btn-block me-2 fa-lg gradient-custom-2 text-white',
+                                    cancelButton:'btn btn-secondary btn-block fa-lg'
+                                },
+                                buttonsStyling:false
+                            })
+                            swalWithCustomButtons.fire({
+                                icon: 'question',
                                 title: 'Error',
                                 text: this.validationErrors,
-                                footer: 'Recuerde revisar en la seccion de SPAM de su correo'
+                                footer: 'Recuerde revisar en la seccion de SPAM de su correo',
+                                confirmButtonText: 'Reenviar enlace',
+                                cancelButtonText:'Aceptar',
+                                showCancelButton:true,
+                                showLoaderOnConfirm:true,
+                                preConfirm:()=>{
+                                    return axios.post('email/resend', this.auth).then((response) => {
+                                        return response
+                                    }).catch(error=>{
+                                        Swal.showValidationMessage(
+                                            error.response.data.data
+                                        )
+                                    })
+                                },
+                                allowOutsideClick:false
+                            }).then((result)=>{
+                                if(result.isConfirmed){
+                                    console.log(result)
+                                    swalWithCustomButtons.fire({
+                                        icon:'success',
+                                        title:"Exito",
+                                        text:result.value.data.message,
+                                        confirmButtonText:'Aceptar'
+                                    })
+                                }
                             });
                         }
                     } else {
