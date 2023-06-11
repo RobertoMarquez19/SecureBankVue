@@ -65,7 +65,7 @@ class AuthController extends BaseController
                 ]);
 
             if ($validator->fails()) {
-                return $this->sendError("Errores de validacion", $validator->errors(), 422);
+                return $this->sendError("Errores de validacion", $validator->messages()->all(), 422);
             } else {
                 DB::beginTransaction();
                 //Encriptamos la infotmacion
@@ -121,7 +121,7 @@ class AuthController extends BaseController
                 ]);
 
             if ($validator->fails()) {
-                return $this->sendError("Errores de validacion", $validator->errors(), 422);
+                return $this->sendError("Errores de validacion", $validator->messages()->all(), 422);
             } else {
                 $input = $request->all();
                 if (Auth::attempt($input)) {
@@ -157,7 +157,7 @@ class AuthController extends BaseController
             }
 
         } catch (RestException $e) {
-            return $this->sendError("SMS Error", ["La verificacion por SMS ya ha expirado"], 401);
+            return $this->sendError("SMS Error", ["Ocurrio un error inesperado al enviar el codigo de verificacion"], 401);
         } catch (Exception $e) {
             return $this->sendError("Fatal Error", ["Ocurrio un error inesperado, estamos trabajando en solventarlo lo antes posible"], 500);
         }
@@ -186,7 +186,7 @@ class AuthController extends BaseController
                 ]);
 
             if ($validator->fails()) {
-                return $this->sendError("Errores de validacion", $validator->errors(), 422);
+                return $this->sendError("Errores de validacion", $validator->messages()->all(), 422);
             } else {
                 $input = $request->all();
                 if (Auth::attempt($request->only('email', 'password'))) {

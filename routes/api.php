@@ -22,7 +22,14 @@ Route::get('email/verify/{id}', [\App\Http\Controllers\API\VerificationControlle
 Route::get('email/resend',  [\App\Http\Controllers\API\VerificationController::class,'resend'])->name('verification.resend');
 
 Route::middleware(['auth:api'])->group( function () {
-    //Rutas productos
     Route::post("cliente/cuentas",[\App\Http\Controllers\API\CuentaBancariaController::class,'store']);
     Route::get('cliente/cuentas',[\App\Http\Controllers\API\CuentaBancariaController::class,'cuentasByCliente']);
+
+    Route::post("cliente/tarjetascredito",[\App\Http\Controllers\API\TarjetaCreditoController::class,'store']);
+    Route::get('cliente/tarjetascredito',[\App\Http\Controllers\API\TarjetaCreditoController::class,'tarjetasCreditoByCliente']);
+
+    Route::post("cliente/tarjetasdebito",[\App\Http\Controllers\API\TarjetaDebitoController::class,'store']);
+    Route::get('cliente/tarjetasdebito',[\App\Http\Controllers\API\TarjetaDebitoController::class,'tarjetasDebitoByCuenta']);
+
+    Route::get('cliente/transferencia/cuenta',[\App\Http\Controllers\API\CuentaBancariaController::class,'checkCuentaExiste']);
 });

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->text('numero_tarjeta')->nullable(false);
             $table->string('numero_tarjeta_hash')->unique()->nullable(false);
             $table->dateTime('fecha_emision')->nullable(false)->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->dateTime('fecha_vencimiento')->nullable(false)->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->dateTime('fecha_vencimiento')->nullable(false)->default(DB::raw("DATEADD(year, 5, GETDATE())"));
             $table->string('cvv')->nullable(false);
             $table->unsignedBigInteger('id_tipo_tarjeta')->nullable(false);
             $table->foreign('id_tipo_tarjeta')->references('id')->on('tarjeta_tipos');

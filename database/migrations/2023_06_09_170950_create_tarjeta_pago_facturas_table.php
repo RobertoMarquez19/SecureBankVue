@@ -16,8 +16,8 @@ return new class extends Migration
             $table->timestamps();
             $table->unsignedBigInteger('from_tarjeta_id')->nullable(false);
             $table->unsignedBigInteger('to_factura_id')->nullable(false);
-            $table->double('tarjeta_monto_antes')->nullable(false);
-            $table->double('tarjeta_monto_despues')->nullable(false);
+            $table->double('from_tarjeta_monto_antes')->nullable(false);
+            $table->double('from_tarjeta_monto_despues')->nullable(false);
             $table->unique(['from_tarjeta_id','to_factura_id']);
             $table->foreign('from_tarjeta_id')->references('id')->on('tarjeta_creditos');
             $table->foreign('to_factura_id')->references('id')->on('facturas');

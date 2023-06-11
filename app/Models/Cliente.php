@@ -22,6 +22,6 @@ class Cliente extends Model
     }
 
     public function cuentas():HasMany{
-        return $this->hasMany(CuentaBancaria::class);
+        return $this->hasMany(CuentaBancaria::class,'id_cliente');
     }
 }

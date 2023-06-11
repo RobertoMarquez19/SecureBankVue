@@ -17,9 +17,9 @@ return new class extends Migration
             $table->timestamps();
             $table->text('numero_cuenta')->nullable(false);
             $table->string('numero_cuenta_hash')->unique()->nullable(false);
-            $table->double('monto_cuenta')->nullable(false);
+            $table->double('monto_cuenta')->nullable(false)->default(100);
             $table->dateTime('fecha_apertura')->nullable(false)->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->enum('estado_cuenta',['activa','cerrada','bloqueada','inactiva']);
+            $table->enum('estado_cuenta',['activa','cerrada','bloqueada','inactiva'])->default('activa');
             $table->unsignedBigInteger('id_producto')->nullable(false);
             $table->foreign('id_producto')->references('id')->on('productos');
             $table->unsignedBigInteger('id_cliente')->nullable(false);

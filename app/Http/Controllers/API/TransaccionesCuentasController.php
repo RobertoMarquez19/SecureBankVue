@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
+use App\Models\CuentaBancaria;
+use Exception;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
-class TransaccionesCuentasController extends Controller
+class TransaccionesCuentasController extends BaseController
 {
-    //
+
 }

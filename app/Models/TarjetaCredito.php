@@ -5,19 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TarjetaDebito extends Model
+class TarjetaCredito extends Model
 {
     use HasFactory;
 
-    protected $table='tarjeta_debitos';
+    protected $table="tarjeta_creditos";
 
-    protected $fillable=['numero_tarjeta','numero_tarjeta_hash','cvv','id_tipo_tarjeta','id_cuenta'];
+    protected $fillable=['numero_tarjeta','numero_tarjeta_hash','id_tipo_tarjeta','id_cliente'];
 
     protected $hidden=['numero_tarjeta_hash'];
 
-    public function cuenta()
+    public function cliente()
     {
-        return $this->belongsTo(CuentaBancaria::class,'id_cuenta');
+        return $this->belongsTo(Cliente::class,'id_cliente');
     }
 
     public function tipoTarjeta(){
