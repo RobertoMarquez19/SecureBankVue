@@ -21,7 +21,8 @@
                                             </ul>
                                         </div>
                                     </div>
-                                    <h5 class="text text-center ">¿Ya te registraste?Ingresá</h5><br><br>
+                                    <h5 class="text text-center ">Formulario de registro</h5>
+                                    <p class="text2 my-5 text-center">Crea una cuenta y disfruta de todos nuestros beneficios.</p>
                                     <div class="row">
                                         <div class="col form-outline mb-4">
                                             <label class="form-label" for="dui">DUI:</label>
@@ -189,7 +190,6 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
 export default {
     name:'register',
     data(){
@@ -213,9 +213,9 @@ export default {
         }
     },
     methods:{
-        ...mapActions({
-            signIn:'auth/login'
-        }),
+        // TODO: Mostrar una SweetAlert una ves el usuario se registre correctamente, diciendole que se ha enviado un correo para confirmar su cuenta
+        // TODO: Limpiar campos y redirigir al Login una ves se de aceptar en la SweetAlert
+        // TODO: Agregar mascaras a los campos, con placeholders
         async registerCliente(){
             this.processing = true
             console.log(this.cliente);

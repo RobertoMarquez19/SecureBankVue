@@ -1,5 +1,9 @@
 import { createWebHistory, createRouter } from 'vue-router'
 import store from '@/store'
+import Auth from "@/store/auth.js";
+
+// Los componentes importados abajos cuentan con Lazy Loading
+// Agregar de la misma manera por cuestiones de rendimiento
 
 /* Guest Component */
 const Login = () => import('@/components/Login.vue')
@@ -13,6 +17,10 @@ const DahboardLayout = () => import('@/components/layouts/Default.vue')
 /* Authenticated Component */
 const Dashboard = () => import('@/components/Dashboard.vue')
 /* Authenticated Component */
+
+/* Cuentas Componente */
+const Cuentas = () => import('@/views/Cuentas.vue')
+/* Cuentas Componente */
 
 
 const routes = [
@@ -48,6 +56,14 @@ const routes = [
                 meta: {
                     title: `Dashboard`
                 }
+            },
+            {
+                name: "cuentas",
+                path: '/',
+                component: Cuentas,
+                meta: {
+                    title: `Cuentas`
+                }
             }
         ]
     }
@@ -60,17 +76,31 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
     document.title = to.meta.title
-    if (to.meta.middleware === "guest") {
-        if (store.state.auth.authenticated) {
+    /*if (to.meta.middleware === "guest") {
+        if (Auth.check()) {
             next({ name: "dashboard" })
         }
         next()
     } else {
-        if (store.state.auth.authenticated) {
+        if (Auth.check()) {
             next()
         } else {
             next({ name: "login" })
         }
+    }*/
+    if (to.meta.middleware === "auth") {
+        if (Auth.check()) {
+            next();
+            return;
+        } else {
+            router.push({
+                name: 'login',
+                path: from.fullPath,
+                replace: true,
+            });
+        }
+    } else {
+        next();
     }
 })
 

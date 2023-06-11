@@ -14,7 +14,8 @@
                                     <div class="text-center text">
                                         <p class="fs-5">Inicia Sesión Aquí</p>
                                     </div>
-                                    <div class="col-12" v-if="Object.keys(validationErrors).length > 0 && typeof validationErrors === 'object'">
+                                    <div class="col-12"
+                                         v-if="Object.keys(validationErrors).length > 0 && typeof validationErrors === 'object'">
                                         <div class="alert alert-danger">
                                             <ul class="mb-0">
                                                 <li v-for="(value, key) in validationErrors" :key="key">
@@ -23,9 +24,10 @@
                                             </ul>
                                         </div>
                                     </div>
-                                    <div class="col-12" v-if="Object.keys(validationErrors).length > 0 && typeof validationErrors === 'string'">
+                                    <div class="col-12"
+                                         v-if="Object.keys(validationErrors).length > 0 && typeof validationErrors === 'string'">
                                         <div class="alert alert-danger">
-                                            {{validationErrors}}
+                                            {{ validationErrors }}
                                         </div>
                                     </div>
                                     <div class="form-outline mb-4">
@@ -50,7 +52,8 @@
                                 </form>
 
                                 <form v-if="mensajeEnviado === true" action="javascript:void(0)" method="post">
-                                    <div class="col-12" v-if="Object.keys(validationErrorsSms).length > 0 && typeof validationErrorsSms === 'object'">
+                                    <div class="col-12"
+                                         v-if="Object.keys(validationErrorsSms).length > 0 && typeof validationErrorsSms === 'object'">
                                         <div class="alert">
                                             <ul class="mb-0">
                                                 <li v-for="(value, key) in validationErrorsSms" :key="key">
@@ -59,15 +62,17 @@
                                             </ul>
                                         </div>
                                     </div>
-                                    <div class="col-12" v-if="Object.keys(validationErrorsSms).length > 0 && typeof validationErrorsSms === 'string'">
+                                    <div class="col-12"
+                                         v-if="Object.keys(validationErrorsSms).length > 0 && typeof validationErrorsSms === 'string'">
                                         <div class="alert">
-                                            {{validationErrorsSms}}
+                                            {{ validationErrorsSms }}
                                         </div>
                                     </div>
 
                                     <div class="my-3">
                                         <p>
-                                            Se ha enviado un codigo de 6 digitos al numero {{this.usuario.telefono_secret}}
+                                            Se ha enviado un codigo de 6 digitos al numero
+                                            {{ this.usuario.telefono_secret }}
                                         </p>
                                     </div>
                                     <div class="form-outline mb-4">
@@ -101,8 +106,9 @@
 </template>
 
 <script>
-import {mapActions} from 'vuex'
 
+import Auth from "@/store/auth.js";
+//import router from '@/router';
 export default {
     name: "login",
     data() {
@@ -126,9 +132,9 @@ export default {
         }
     },
     methods: {
-        ...mapActions({
-            signIn: 'auth/login'
-        }),
+        // TODO: Boton de retroceder en login que pondra la variable this.mensajeEnviado en false
+        // TODO: Para mostrar nuevamente el form de correo y contraseña, y solicitar el mensaje
+        // TODO: Agregar mascaras a los campos, con placeholders
         async login() {
             this.processing = true
             await axios.post('http://127.0.0.1:8000/api/usuario/sms', this.auth).then((response) => {
@@ -155,19 +161,29 @@ export default {
         },
         async validarTwillo() {
             this.processing = true;
-            await axios.post('http://127.0.0.1:8000/api/usuario/login',this.usuario).then((response)=>{
-                this.signIn()
+            await axios.post('http://127.0.0.1:8000/api/usuario/login', this.usuario).then((response) => {
                 console.log(response);
-            }).catch(({response})=>{
+                let dataResponse = response.data;
+                let {token} = dataResponse.data;
+                let user = {
+                    nombres: dataResponse.data.nombres,
+                    apellidos: dataResponse.data.apellidos,
+                    correoElectronico: dataResponse.data.correo_electronico
+                }
+                // Aqui seteamos el local storage de la clase auth
+                Auth.login(token, user);
+
+                //this.router.push('/');
+            }).catch(({response}) => {
                 console.error(response.data);
-                if(response.status===401 || response.status === 422){
+                if (response.status === 401 || response.status === 422) {
                     this.validationErrorsSms = response.data.data;
                     alert(response.data.message);
-                }else{
+                } else {
                     this.validationErrorsSms = {}
                     alert(response.data.message);
                 }
-            }).finally(()=>{
+            }).finally(() => {
                 this.processing = false
             });
         }
