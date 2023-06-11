@@ -243,4 +243,16 @@ class AuthController extends BaseController
             return $this->sendError("Fatal Error", ["Ocurrio un error inesperado, estamos trabajando en solventarlo lo antes posible"], 500);
         }
     }
+
+    public function logout(Request $request){
+        try {
+            $user = $request->user();
+            $token = $user->token();
+            $token->revoke();
+
+            return $this->sendResponse("Adios","Gracias por usar SecureBank");
+        } catch (Exception $e) {
+            return $this->sendError("Fatal Error", ["Ocurrio un error inesperado, estamos trabajando en solventarlo lo antes posible"], 500);
+        }
+    }
 }

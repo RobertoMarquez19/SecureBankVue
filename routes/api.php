@@ -24,6 +24,7 @@ Route::get('email/resend',  [\App\Http\Controllers\API\VerificationController::c
 Route::middleware(['auth:api'])->group( function () {
 
     Route::get('cliente/sesion/renovar',[\App\Http\Controllers\API\AuthController::class,'refreshToken']);
+    Route::post('cliente/sesion/logout',[\App\Http\Controllers\API\AuthController::class,'logout']);
 
     Route::post("cliente/cuentas",[\App\Http\Controllers\API\CuentaBancariaController::class,'store']);
     Route::get('cliente/cuentas',[\App\Http\Controllers\API\CuentaBancariaController::class,'cuentasByCliente']);
