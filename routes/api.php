@@ -39,5 +39,5 @@ Route::middleware(['auth:api'])->group( function () {
 
     Route::get('cliente/cuentas/transferencias',[\App\Http\Controllers\API\TransaccionesCuentasController::class,'transaccionesCuentas']);
 
-    Route::post('cliente/facturas/pago',[\App\Http\Controllers\API\CuentaPagoFacturaController::class,'store']);
+    Route::post('cliente/cuentas/facturas/pago',[\App\Http\Controllers\API\CuentaPagoFacturaController::class,'store']);
 });
