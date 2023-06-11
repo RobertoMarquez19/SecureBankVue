@@ -19,7 +19,7 @@ Route::post('usuario/login', [\App\Http\Controllers\API\AuthController::class, '
 
 //Email
 Route::get('email/verify/{id}', [\App\Http\Controllers\API\VerificationController::class,'verify'])->name('verification.verify');
-Route::get('email/resend',  [\App\Http\Controllers\API\VerificationController::class,'resend'])->name('verification.resend');
+Route::post('email/resend',  [\App\Http\Controllers\API\VerificationController::class,'resend'])->name('verification.resend');
 
 Route::middleware(['auth:api'])->group( function () {
 
