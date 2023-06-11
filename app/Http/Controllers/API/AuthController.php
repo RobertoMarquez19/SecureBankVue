@@ -228,4 +228,19 @@ class AuthController extends BaseController
             return $this->sendError("Fatal Error", ["Ocurrio un error inesperado, estamos trabajando en solventarlo lo antes posible"], 500);
         }
     }
+
+    public function refreshToken(Request $request){
+        try {
+            $user = $request->user();
+            $token = $user->token();
+
+            $newToken = $user->createToken('SecureBank')->accessToken;
+
+            $token->revoke();
+
+            return $this->sendResponse($newToken,"Sesion renovada");
+        } catch (Exception $e) {
+            return $this->sendError("Fatal Error", ["Ocurrio un error inesperado, estamos trabajando en solventarlo lo antes posible"], 500);
+        }
+    }
 }
