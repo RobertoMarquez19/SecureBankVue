@@ -35,4 +35,10 @@ class CuentaBancaria extends Model
             ->union($this->hasMany(TransaccionesCuentas::class, 'to_cuenta_id', 'id')->select('*'))
             ->orderBy('created_at','desc');
     }
+
+    public function pagosFacturas():HasMany{
+        return $this->hasMany(CuentaPagoFactura::class, 'from_cuenta_id', 'id')
+            ->select('*')
+            ->orderBy('created_at','desc');
+    }
 }

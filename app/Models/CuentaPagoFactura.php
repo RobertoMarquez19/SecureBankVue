@@ -13,6 +13,10 @@ class CuentaPagoFactura extends Model
 
     protected $fillable=['from_cuenta_id','to_factura_id'];
 
+    protected $casts=[
+        'created_at'=>'datetime'
+    ];
+
     public function factura(){
         return $this->belongsTo(Factura::class,"to_factura_id");
     }

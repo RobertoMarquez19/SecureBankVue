@@ -40,7 +40,7 @@ class CuentaPagoFacturaController extends BaseController
                         if ($cuenta->monto_cuenta >= $factura->monto) {
                             $pago = new CuentaPagoFactura(['from_cuenta_id' => $cuenta->id,
                                 'to_factura_id' => $factura->id]);
-                            if ($factura->estado == 'pagado') {
+                            if ($factura->estado == 'pendiente') {
                                 if ($pago->save()) {
                                     $success['id_transaccion'] = $pago->id;
                                     $success['monto'] = $pago->factura->monto;

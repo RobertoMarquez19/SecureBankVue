@@ -148,7 +148,7 @@ class AuthController extends BaseController
                         //Informamos que hemos enviado el mensaje al usuario
                         return $this->sendResponse($success, "Mensaje enviado al numero telefonico vinculado al usuario");
                     } else {
-                        return $this->sendError("Unauthorized", ["Su cuenta de correo electronico no ha sido verificada"], 401);
+                        return $this->sendError("Unauthorized", ["Su cuenta de correo electronico no ha sido verificada"], 404);
                     }
                 } else {
                     return $this->sendError("Unauthorized", ['Credenciales incorrectas'], 401);

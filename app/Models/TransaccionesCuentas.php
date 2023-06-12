@@ -13,6 +13,9 @@ class TransaccionesCuentas extends Model
 
     protected $fillable=['from_cuenta_id','to_cuenta_id','monto','concepto'];
 
+    protected $casts=[
+        'created_at'=>'datetime'
+    ];
     public function cuentaDe()
     {
         return $this->belongsTo(CuentaBancaria::class, 'from_cuenta_id', 'id');

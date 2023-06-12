@@ -8,6 +8,7 @@ use App\Models\User;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Validator;
@@ -96,30 +97,44 @@ class TransaccionesCuentasController extends BaseController
                         if($transaccion->from_cuenta_id==$cuenta->id){
                             //Salida
                             $transacciones->push(['id_transaccion'=>$transaccion->id,
-                                'monto_antes'=>$transaccion->from_cuenta_monto_antes,
-                                'monto_despues'=>$transaccion->from_cuenta_monto_despues,
+                                'monto'=>round($transaccion->monto,2),
+                                'monto_despues'=>round($transaccion->from_cuenta_monto_despues,2),
                                 'cuenta_destino'=>Crypt::decryptString($transaccion->cuentaA->numero_cuenta),
                                 'fecha_operacion'=>$transaccion->created_at,
+                                'fecha_operacion_string'=>Carbon::parse($transaccion->created_at)->format('d/m/Y h:i:s A'),
                                 'concepto'=>$transaccion->concepto,
                                 'operacion'=>'salida']);
                         }else{
                             //Entrada
                             $transacciones->push(['id_transaccion'=>$transaccion->id,
-                                'monto_antes'=>$transaccion->to_cuenta_monto_antes,
-                                'monto_despues'=>$transaccion->to_cuenta_monto_despues,
+                                'monto'=>round($transaccion->monto,2),
+                                'monto_despues'=>round($transaccion->to_cuenta_monto_despues,2),
                                 'cuenta_recibido'=>Crypt::decryptString($transaccion->cuentaDe->numero_cuenta),
                                 'fecha_operacion'=>$transaccion->created_at,
+                                'fecha_operacion_string'=>Carbon::parse($transaccion->created_at)->format('d/m/Y h:i:s A'),
                                 'concepto'=>$transaccion->concepto,
                                 'operacion'=>'entrada']);
                         }
                     }
-                    return $this->sendResponse($transacciones, "Historial de transferencias");
+                    foreach ($cuenta->pagosFacturas as $pago){
+                        $transacciones->push(['id_transaccion'=>$pago->id,
+                            'monto'=>round($pago->factura->monto,2),
+                            'colector'=>$pago->factura->colector,
+                            'monto_despues'=>round($pago->from_cuenta_monto_despues,2),
+                            'fecha_operacion'=>$pago->created_at,
+                            'fecha_operacion_string'=>Carbon::parse($pago->created_at)->format('d/m/Y h:i:s A'),
+                            'operacion'=>'factura']);
+                    }
+                    $sorted = $transacciones->sortByDesc(function ($obj, $key) {
+                        return $obj['fecha_operacion']->getTimestamp();
+                    });
+                    return $this->sendResponse($sorted->values()->all(), "Historial de transferencias");
                 } else {
                     return $this->sendError("Unauthorized", ['La cuenta ingresada no le pertenece a usted'], 401);
                 }
             }
         } catch (Exception $e) {
-            return $this->sendError($e->getMessage(), ["Ocurrio un error inesperado, estamos trabajando en solventarlo lo antes posible"], 500);
+            return $this->sendError($e->getTrace(), ["Ocurrio un error inesperado, estamos trabajando en solventarlo lo antes posible"], 500);
         }
     }
 }
