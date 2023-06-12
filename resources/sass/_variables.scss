@@ -8,11 +8,29 @@ $line-height-base: 1.6;
 
 @import url('https://fonts.googleapis.com/css2?family=League Spartan');
 @import url('https://fonts.googleapis.com/css2?family=Montserrat');
+.color1{
+    background-color: #CF3125;
+    color: #CF3125;
+}
+.color2{
+    color: #ffffff;
+}
+.color3{
+    background-color: #F7931D;
+}
+.color4{
+    background-color: #00174F;
+}
 .text{
     font-family: 'League Spartan';
 }
 .text2{
     font-family: 'Montserrat';
+}
+.text3{
+    font-family: 'League Spartan';
+    font-size: 18px;
+    color: #ffffff;
 }
 .box {
     height: 170px;
