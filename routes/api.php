@@ -33,15 +33,15 @@ Route::middleware(['auth:api'])->group( function () {
     Route::get('cliente/cuentas/tarjetascredito',[\App\Http\Controllers\API\TarjetaCreditoController::class,'tarjetasCreditoByCliente']);
 
     Route::post("cliente/tarjetasdebito",[\App\Http\Controllers\API\TarjetaDebitoController::class,'store']);
-    Route::get('cliente/tarjetasdebito',[\App\Http\Controllers\API\TarjetaDebitoController::class,'tarjetasDebitoByCuenta']);
+    Route::post('cliente/tarjetasdebito',[\App\Http\Controllers\API\TarjetaDebitoController::class,'tarjetasDebitoByCuenta']);
 
-    Route::get('cliente/transferencia/cuenta',[\App\Http\Controllers\API\CuentaBancariaController::class,'checkCuentaExiste']);
+    Route::post('cliente/transferencia/cuenta',[\App\Http\Controllers\API\CuentaBancariaController::class,'checkCuentaExiste']);
 
-    Route::get('cliente/facturas',[\App\Http\Controllers\API\FacturasController::class,'checkFacturaExiste']);
+    Route::post('cliente/facturas',[\App\Http\Controllers\API\FacturasController::class,'checkFacturaExiste']);
 
     Route::post('cliente/transferencia/transferir',[\App\Http\Controllers\API\TransaccionesCuentasController::class,'transferir']);
 
-    Route::get('cliente/cuentas/transferencias',[\App\Http\Controllers\API\TransaccionesCuentasController::class,'transaccionesCuentas']);
+    Route::post('cliente/cuentas/transferencias',[\App\Http\Controllers\API\TransaccionesCuentasController::class,'transaccionesCuentas']);
 
     Route::post('cliente/cuentas/facturas/pago',[\App\Http\Controllers\API\CuentaPagoFacturaController::class,'store']);
 });

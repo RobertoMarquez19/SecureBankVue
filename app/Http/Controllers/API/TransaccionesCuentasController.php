@@ -71,7 +71,7 @@ class TransaccionesCuentasController extends BaseController
                 }
             }
         } catch (Exception $e) {
-            return $this->sendError($e->getMessage(), ["Ocurrio un error inesperado, estamos trabajando en solventarlo lo antes posible"], 500);
+            return $this->sendError("Fatal Error", ["Ocurrio un error inesperado, estamos trabajando en solventarlo lo antes posible"], 500);
         }
     }
 

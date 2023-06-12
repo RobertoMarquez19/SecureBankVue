@@ -44,7 +44,7 @@ class CuentaBancariaController extends BaseController
                 'cuenta_destino' => 'required|max:20|min:20'
             ],
                 [
-                    'cuenta_destino.required' => 'El codigo de cuenta es requerido',
+                    'cuenta_destino.required' => 'El numero de cuenta es requerido',
                     'cuenta_destino.min'=>'El numero de cuenta debe tener 20 caracteres como minimo',
                     'cuenta_destino.max'=>'El numero de cuenta debe tener 20 caracteres como maximo'
                 ]);
