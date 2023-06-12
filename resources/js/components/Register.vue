@@ -17,10 +17,12 @@
                                 <h5 class="text text-center ">Formulario de registro</h5>
                                 <p class="text2 my-5 text-center">Crea una cuenta y disfruta de todos nuestros
                                     beneficios.</p>
-                                <div class="col-12" v-if="Object.keys(validationErrors).length > 0">
+                                <div class="col-12"
+                                     v-if="Object.keys(validationErrors).length > 0">
                                     <div class="alert alert-danger">
-                                        <ul class="mb-0">
-                                            <li v-for="(value, key) in validationErrors" :key="key">{{ value[0] }}
+                                        <ul>
+                                            <li v-for="value in validationErrors">
+                                                {{ value }}
                                             </li>
                                         </ul>
                                     </div>
@@ -87,7 +89,7 @@
                                     <label class="form-label" for="direccion">Dirección:</label>
                                     <textarea class="form-control" id="direccion" name="direccion" required
                                               v-model="cliente.direccion">
-                                        </textarea>
+                                                    </textarea>
                                 </div>
 
 
@@ -163,7 +165,7 @@
 
                                 <div class="text-center pt-1 mb-5 pb-1">
                                     <button class="btn btn-block fa-lg gradient-custom-2 mb-3 mx-3
-                                                        text-white" :disabled="processing">
+                                                                    text-white" :disabled="processing">
                                         {{ processing ? "Espere" : "Registrarse" }}
                                     </button>
                                     <button class="btn gradient-custom-2 text-light btn-block fa-lg mb-3" type="Reset">
@@ -234,7 +236,7 @@ export default {
                 })
             }).catch(({response}) => {
                 let mensajeError = response.data.message;
-                if (response.status === 422 || response.status === 500) {
+                if (response.status === 422) {
                     this.validationErrors = response.data.data
                     Swal.fire({
                         icon: 'error',

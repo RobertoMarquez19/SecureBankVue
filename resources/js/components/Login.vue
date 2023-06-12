@@ -14,20 +14,14 @@
                                     <div class="text-center text">
                                         <p class="fs-5">Inicia Sesión Aquí</p>
                                     </div>
-                                    <!--                                    <div class="col-12"-->
-                                    <!--                                         v-if="Object.keys(validationErrors).length > 0 && typeof validationErrors === 'object'">-->
-                                    <!--                                        <div class="alert alert-danger">-->
-                                    <!--                                            <ul class="mb-0">-->
-                                    <!--                                                <li v-for="(value, key) in validationErrors" :key="key">-->
-                                    <!--                                                    {{ value[0] }}-->
-                                    <!--                                                </li>-->
-                                    <!--                                            </ul>-->
-                                    <!--                                        </div>-->
-                                    <!--                                    </div>-->
                                     <div class="col-12"
-                                         v-if="Object.keys(validationErrors).length > 0 && typeof validationErrors === 'string'">
+                                         v-if="Object.keys(validationErrors).length > 0">
                                         <div class="alert alert-danger">
-                                            {{ validationErrors }}
+                                            <ul>
+                                                <li v-for="value in validationErrors">
+                                                    {{ value }}
+                                                </li>
+                                            </ul>
                                         </div>
                                     </div>
                                     <div class="form-outline mb-4">
@@ -53,19 +47,13 @@
 
                                 <form v-if="mensajeEnviado === true" action="javascript:void(0)" method="post">
                                     <div class="col-12"
-                                         v-if="Object.keys(validationErrorsSms).length > 0 && typeof validationErrorsSms === 'object'">
-                                        <div class="alert">
-                                            <ul class="mb-0">
-                                                <li v-for="(value, key) in validationErrorsSms" :key="key">
-                                                    {{ value[0] }}
+                                         v-if="Object.keys(validationErrorsSms).length > 0">
+                                        <div class="alert alert-danger">
+                                            <ul>
+                                                <li v-for="value in validationErrorsSms">
+                                                    {{ value }}
                                                 </li>
                                             </ul>
-                                        </div>
-                                    </div>
-                                    <div class="col-12"
-                                         v-if="Object.keys(validationErrorsSms).length > 0 && typeof validationErrorsSms === 'string'">
-                                        <div class="alert">
-                                            {{ validationErrorsSms }}
                                         </div>
                                     </div>
 
@@ -153,15 +141,15 @@ export default {
                     console.error(response);
                     let mensajeError = response.data.message;
                     if (response.status === 422) {
-                        this.validationErrors = response.data.data[0];
+                        this.validationErrors = response.data.data;
                         Swal.fire({
                             icon: 'error',
                             title: 'Error',
                             text: mensajeError,
                             footer: 'Revise las validaciones en el formulario'
                         });
-                    } else if (response.status === 401) {
-                        this.validationErrors = response.data.data[0];
+                    } else if (response.status === 404) {
+                        this.validationErrors = response.data.data;
                         if (this.validationErrors === "Credenciales incorrectas") {
                             Swal.fire({
                                 icon: 'error',
@@ -207,7 +195,16 @@ export default {
                                 }
                             });
                         }
-                    } else {
+                    } else if (response.status === 401) {
+                        this.validationErrors = response.data.data;
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: this.validationErrors[0],
+                            footer: 'Revise las validaciones en el formulario'
+                        })
+                    }
+                    else {
                         this.validationErrors = {}
                         Swal.fire({
                             icon: 'error',

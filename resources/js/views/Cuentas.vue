@@ -19,16 +19,15 @@ export default {
                 id_cuenta: "",
                 npe: ""
             },
-            movimientos: []
+            movimientos: [],
+            spinnerCuentas: false,
+            spinnerMovimientos: false,
         }
     },
     async mounted() {
         await this.obtenerCuentas();
     },
     methods: {
-        logout() {
-            Auth.logout()
-        },
         async crearCuenta() {
             await axios.post('cliente/cuentas').then(response => {
                 this.obtenerCuentas();
@@ -42,15 +41,19 @@ export default {
             });
         },
         async obtenerCuentas() {
+            this.spinnerCuentas = true;
             await axios.get('cliente/cuentas').then(response => {
                 this.cuentas = response.data.data;
+                this.spinnerCuentas = false;
             }).catch(({response}) => {
                 let mensajeError = response.data.message;
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
                     text: mensajeError
-                });
+                }).finally(()=> {
+                    this.spinnerCuentas = false
+                })
             });
         },
 
@@ -153,15 +156,18 @@ export default {
         },
 
         async obtenerMovimientos(cuenta){
+            this.spinnerMovimientos = true;
             await axios.post('cliente/cuentas/transferencias',{id_cuenta:cuenta.id}).then(response => {
                 this.movimientos=response.data.data
-                console.log(response)
+                this.spinnerMovimientos = false;
             }).catch(({response}) => {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
                     text: response.data.data
                 });
+            }).finally(() => {
+                this.spinnerMovimientos = false
             })
         },
 
@@ -192,7 +198,7 @@ export default {
 <template>
     <h1 class="text-center">Cuentas</h1>
 
-    <!-- Modal -->
+    <!-- Modal de Transferencias -->
     <div class="modal fade" id="transferenciaModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
          aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -227,6 +233,7 @@ export default {
         </div>
     </div>
 
+    <!-- Modal de Pago de Facturas -->
     <div class="modal fade" id="pagoModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
          aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -255,6 +262,7 @@ export default {
         </div>
     </div>
 
+    <!-- Modal de Movimientos de Cuenta -->
     <div class="modal fade " id="movimientosModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
          aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
@@ -263,6 +271,14 @@ export default {
                     <h1 class="modal-title fs-5" id="staticBackdropLabel">Historial de transacciones</h1>
                 </div>
                 <div class="modal-body">
+                    <div v-if="movimientos.length === 0" class="text-center">
+                        <p class="fs-5"><i class="bi bi-currency-exchange"></i> No posee historial de transacciones con esta cuenta</p>
+                    </div>
+                    <div v-if="spinnerMovimientos" class="mx-auto text-center mt-5">
+                        <div class="spinner-grow" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
                     <div class="col mb-2" v-for="(movimiento, index) in movimientos" :key="movimiento.id_transaccion">
                         <div class="card" data-bs-toggle="collapse">
                             <div v-if="movimiento.cuenta_destino!=null" class="card-header fw-bold">
@@ -306,7 +322,18 @@ export default {
 
     <hr class="my-4">
 
-    <div class="container-sm">
+    <!-- Mensaje de ninguna cuenta Inactiva Y Spinner de Carga -->
+    <div v-if="cuentas.length === 0" class="text-center">
+        <p class="fs-5"><i class="bi bi-bank2"></i> No posee cuentas activas</p>
+    </div>
+
+    <div v-if="spinnerCuentas" class="mx-auto text-center mt-5">
+        <div class="spinner-grow" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <div class="container-sm vertical-scrollable">
         <div class="row">
             <div class="col-sm-6 mt-3 mb-3 mb-sm-0" v-for="(cuenta, index) in cuentas" :key="cuenta.id">
                 <div class="card" data-bs-toggle="collapse" :data-bs-target="`#collapse-cuenta-`+cuenta.id"
@@ -352,3 +379,13 @@ export default {
     </div>
 
 </template>
+
+<style>
+.vertical-scrollable>.row {
+    position: absolute;
+    top: 175px;
+    bottom: 100px;
+    width: 80%;
+    overflow-y: scroll;
+}
+</style>

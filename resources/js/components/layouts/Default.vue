@@ -94,7 +94,7 @@ export default {
                     // TODO: Implementar Logout
                     //this.logout();
                 } else if (result.isConfirmed) {
-                    axios.get('cliente/sesion/renovar', this.auth.token).then((response) => {
+                    axios.get('cliente/sesion/renovar').then((response) => {
                         console.log(response);
                         let tokenResponse = response.data.data;
                         Auth.renewToken(tokenResponse);
@@ -120,18 +120,17 @@ export default {
                     });
                 }
             })
-        }, 660000);
+        }, 180000);
     },
     beforeUnmount() {
         clearInterval(this.timer)
     },
     methods: {
-        logout() {
+        async logout() {
             // TODO: Hacer el metodo en axios de revocar el token, cliente/sesion/renovar
-            axios.post('cliente/sesion/logout', this.auth.token).then((response) => {
+            await axios.post('cliente/sesion/logout').then((response) => {
                 console.log(response);
-                let tokenResponse = response.data.data;
-                Auth.logout(tokenResponse);
+                Auth.logout();
             }).catch(({response}) => {
                 console.error(response.data);
                 let mensajeError = response.data.message;
