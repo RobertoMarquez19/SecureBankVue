@@ -45,35 +45,37 @@
                                     </div>
                                 </form>
 
-                                <form v-if="mensajeEnviado === true" action="javascript:void(0)" method="post">
-                                    <div class="col-12"
-                                         v-if="Object.keys(validationErrorsSms).length > 0">
-                                        <div class="alert alert-danger">
-                                            <ul>
-                                                <li v-for="value in validationErrorsSms">
-                                                    {{ value }}
-                                                </li>
-                                            </ul>
+                                <div v-if="mensajeEnviado === true">
+                                    <form action="javascript:void(0)" method="post">
+                                        <div class="col-12"
+                                             v-if="Object.keys(validationErrorsSms).length > 0">
+                                            <div class="alert alert-danger">
+                                                <ul>
+                                                    <li v-for="value in validationErrorsSms">
+                                                        {{ value }}
+                                                    </li>
+                                                </ul>
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <div class="my-3">
-                                        <p>
-                                            Se ha enviado un codigo de 6 digitos al numero
-                                            {{ this.usuario.telefono_secret }}
-                                        </p>
-                                    </div>
-                                    <div class="form-outline mb-4">
-                                        <label for="email" class="form-label">Codigo</label>
-                                        <input type="text" class="form-control" v-model="usuario.code">
-                                    </div>
-                                    <div class="text-center pt-1 mb-5 pb-1">
-                                        <button class="btn btn-block fa-lg gradient-custom-2 mb-3 mx-3
+                                        <div class="my-3">
+                                            <p>
+                                                Se ha enviado un codigo de 6 digitos al numero
+                                                {{ this.usuario.telefono_secret }}
+                                            </p>
+                                        </div>
+                                        <div class="form-outline mb-4">
+                                            <label for="email" class="form-label">Codigo</label>
+                                            <input type="text" class="form-control" v-model="usuario.code">
+                                        </div>
+                                        <div class="text-center pt-1 mb-5 pb-1">
+                                            <button class="btn btn-block fa-lg gradient-custom-2 mb-3 mx-3
                                                         text-white" :disabled="processing" @click="validarTwillo">
-                                            {{ processing ? "Espere" : "Validar" }}
-                                        </button>
-                                    </div>
-                                </form>
+                                                {{ processing ? "Espere" : "Validar" }}
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
 
                             </div>
                         </div>
@@ -158,11 +160,11 @@ export default {
                             });
                         } else {
                             const swalWithCustomButtons = Swal.mixin({
-                                customClass:{
-                                    confirmButton:'btn btn-block me-2 fa-lg gradient-custom-2 text-white',
-                                    cancelButton:'btn btn-secondary btn-block fa-lg'
+                                customClass: {
+                                    confirmButton: 'btn btn-block me-2 fa-lg gradient-custom-2 text-white',
+                                    cancelButton: 'btn btn-secondary btn-block fa-lg'
                                 },
-                                buttonsStyling:false
+                                buttonsStyling: false
                             })
                             swalWithCustomButtons.fire({
                                 icon: 'question',
@@ -170,27 +172,27 @@ export default {
                                 text: this.validationErrors,
                                 footer: 'Recuerde revisar en la seccion de SPAM de su correo',
                                 confirmButtonText: 'Reenviar enlace',
-                                cancelButtonText:'Aceptar',
-                                showCancelButton:true,
-                                showLoaderOnConfirm:true,
-                                preConfirm:()=>{
+                                cancelButtonText: 'Aceptar',
+                                showCancelButton: true,
+                                showLoaderOnConfirm: true,
+                                preConfirm: () => {
                                     return axios.post('email/resend', this.auth).then((response) => {
                                         return response
-                                    }).catch(error=>{
+                                    }).catch(error => {
                                         Swal.showValidationMessage(
                                             error.response.data.data
                                         )
                                     })
                                 },
-                                allowOutsideClick:false
-                            }).then((result)=>{
-                                if(result.isConfirmed){
+                                allowOutsideClick: false
+                            }).then((result) => {
+                                if (result.isConfirmed) {
                                     console.log(result)
                                     swalWithCustomButtons.fire({
-                                        icon:'success',
-                                        title:"Exito",
-                                        text:result.value.data.message,
-                                        confirmButtonText:'Aceptar'
+                                        icon: 'success',
+                                        title: "Exito",
+                                        text: result.value.data.message,
+                                        confirmButtonText: 'Aceptar'
                                     })
                                 }
                             });
@@ -203,8 +205,7 @@ export default {
                             text: this.validationErrors[0],
                             footer: 'Revise las validaciones en el formulario'
                         })
-                    }
-                    else {
+                    } else {
                         this.validationErrors = {}
                         Swal.fire({
                             icon: 'error',

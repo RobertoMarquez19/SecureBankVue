@@ -3,7 +3,7 @@ import Auth from "@/store/auth.js";
 import Swal from 'sweetalert2/dist/sweetalert2';
 
 export default {
-    name: "default-layout",
+    name: "cuentas",
     data() {
         return {
             user: this.auth.user,
@@ -196,7 +196,7 @@ export default {
 </script>
 
 <template>
-    <h1 class="text-center">Cuentas</h1>
+    <h1 class="text-center"> <i class="bi bi-bank"></i> Cuentas</h1>
 
     <!-- Modal de Transferencias -->
     <div class="modal fade" id="transferenciaModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"

@@ -22,6 +22,10 @@ const Dashboard = () => import('@/components/Dashboard.vue')
 const Cuentas = () => import('@/views/Cuentas.vue')
 /* Cuentas Componente */
 
+/* Cuentas Componente */
+const Tarjetas = () => import('@/views/Tarjetas.vue')
+/* Cuentas Componente */
+
 
 const routes = [
     {
@@ -63,6 +67,14 @@ const routes = [
                 component: Cuentas,
                 meta: {
                     title: `Cuentas`
+                }
+            },
+            {
+                name: "tarjetas",
+                path: '/',
+                component: Tarjetas,
+                meta: {
+                    title: `Tarjetas`
                 }
             }
         ]

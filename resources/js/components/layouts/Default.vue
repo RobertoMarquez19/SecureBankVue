@@ -20,10 +20,10 @@
                             </router-link>
                         </li>
                         <li class="nav-item">
-                            <a href="#" class="nav-link align-middle px-0">
+                            <router-link :to="{name:'tarjetas'}" class="nav-link align-middle px-0">
                                 <i class="fs-2 bi bi-credit-card-2-back color2"></i>
                                 <span class="ms-1 d-none d-sm-inline text3">Tarjetas</span>
-                            </a>
+                            </router-link>
                         </li>
                         <li class="nav-item">
                             <a href="#" class="nav-link align-middle px-0">
