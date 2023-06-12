@@ -10,7 +10,8 @@ class Auth {
             axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.token;
         }
     }
-
+// cliente/sesion/logout -> post, paso el token
+// cliente/sesion/renovar -> post, paso el token
     login(token, user) {
         window.localStorage.setItem('token', token);
         window.localStorage.setItem('user', JSON.stringify(user));
@@ -18,6 +19,12 @@ class Auth {
         this.token = token;
         this.user = user;
         router.push({name: 'dashboard'});
+    }
+
+    renewToken(token) {
+        window.localStorage.setItem('token', token);
+        axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+        this.token = token;
     }
 
     check() {

@@ -80,8 +80,8 @@ export default {
             Swal.fire({
                 title: '¿Desea Extender la Sesión?',
                 icon: "question",
-                timer: 5000,
-                html: "<p>Su sesion se cerrara automaticamente si no la extiende</p>",
+                timer: 24000,
+                html: "<p>Su sesión se cerrara automaticamente si no la extiende</p>",
                 timerProgressBar: true,
                 allowOutsideClick: false,
                 confirmButtonText: "Extender Sesión",
@@ -91,19 +91,67 @@ export default {
             }).then((result) => {
                 /* Read more about handling dismissals below */
                 if (result.dismiss === Swal.DismissReason.timer) {
-                    this.logout();
+                    // TODO: Implementar Logout
+                    //this.logout();
                 } else if (result.isConfirmed) {
-                    console.log("Nuevo Token")
+                    axios.get('cliente/sesion/renovar', this.auth.token).then((response) => {
+                        console.log(response);
+                        let tokenResponse = response.data.data;
+                        Auth.renewToken(tokenResponse);
+                    }).catch(({response}) => {
+                        console.error(response.data);
+                        let mensajeError = response.data.message;
+                        if (response.status === 401 || response.status === 422) {
+                            this.validationErrors = response.data.data
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: mensajeError,
+                            });
+                        } else {
+                            this.validationErrors = {}
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error ah ocurrido algo inesperado',
+                                text: mensajeError,
+                                footer: 'Estamos trabajando para resolverlo'
+                            });
+                        }
+                    });
                 }
             })
-        }, 6000);
+        }, 660000);
     },
     beforeUnmount() {
         clearInterval(this.timer)
     },
     methods: {
         logout() {
-            Auth.logout()
+            // TODO: Hacer el metodo en axios de revocar el token, cliente/sesion/renovar
+            axios.post('cliente/sesion/logout', this.auth.token).then((response) => {
+                console.log(response);
+                let tokenResponse = response.data.data;
+                Auth.logout(tokenResponse);
+            }).catch(({response}) => {
+                console.error(response.data);
+                let mensajeError = response.data.message;
+                if (response.status === 401 || response.status === 422) {
+                    this.validationErrors = response.data.data
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: mensajeError,
+                    });
+                } else {
+                    this.validationErrors = {}
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error ah ocurrido algo inesperado',
+                        text: mensajeError,
+                        footer: 'Estamos trabajando para resolverlo'
+                    });
+                }
+            });
         }
     }
 }
