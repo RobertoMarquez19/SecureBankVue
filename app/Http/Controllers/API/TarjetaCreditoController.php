@@ -44,13 +44,8 @@ class TarjetaCreditoController extends BaseController
             $cliente = User::find(Auth::id())->cliente;
             $tarjetas = Collection::empty();
             foreach ($cliente->tarjetasCredito as $tarjeta){
-                $dividida = str_split(Crypt::decryptString($tarjeta->numero_tarjeta), 4);
-
-                $resultado = implode(" ", $dividida);
-
                 $tarjetas->push([
-                    'id'=>$tarjeta->id,
-                    'numero_tarjeta'=>$resultado,
+                    'numero_tarjeta'=>Crypt::decryptString($tarjeta->numero_tarjeta),
                     'monto'=>round($tarjeta->monto,2),
                     'fecha_emision'=>$tarjeta->fecha_emision,
                     'fecha_vencimiento'=>Carbon::parse($tarjeta->fecha_vencimiento)->format('m/Y'),

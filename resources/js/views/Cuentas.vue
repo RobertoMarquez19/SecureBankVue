@@ -10,13 +10,13 @@ export default {
             cuentas: [],
             cuentaSeleccionada: null,
             transaccion: {
-                id_cuenta: "",
+                cuenta_origen: "",
                 cuenta_destino: "",
                 monto: "",
                 concepto: ""
             },
             pagoFactura: {
-                id_cuenta: "",
+                cuenta_origen: "",
                 npe: ""
             },
             movimientos: [],
@@ -58,7 +58,7 @@ export default {
         },
 
         async validarCuentaDestino() {
-            this.transaccion.id_cuenta = this.cuentaSeleccionada.id
+            this.transaccion.cuenta_origen = this.cuentaSeleccionada.numero_cuenta
             await axios.post('cliente/transferencia/cuenta', {cuenta_destino: this.transaccion.cuenta_destino}).then(response => {
                 const swalWithCustomButtons = Swal.mixin({
                     customClass: {
@@ -107,7 +107,7 @@ export default {
         },
 
         async validarNpe() {
-            this.pagoFactura.id_cuenta = this.cuentaSeleccionada.id
+            this.pagoFactura.cuenta_origen = this.cuentaSeleccionada.numero_cuenta
             await axios.post('cliente/facturas', {npe: this.pagoFactura.npe}).then(response => {
                 const swalWithCustomButtons = Swal.mixin({
                     customClass: {
@@ -157,7 +157,7 @@ export default {
 
         async obtenerMovimientos(cuenta){
             this.spinnerMovimientos = true;
-            await axios.post('cliente/cuentas/transferencias',{id_cuenta:cuenta.id}).then(response => {
+            await axios.post('cliente/cuentas/transferencias',{numero_cuenta:cuenta.numero_cuenta}).then(response => {
                 this.movimientos=response.data.data
                 this.spinnerMovimientos = false;
             }).catch(({response}) => {
@@ -174,7 +174,6 @@ export default {
 
         clearFormTransaccion() {
             this.transaccion = {
-                id_cuenta: "",
                 cuenta_destino: "",
                 monto: "",
                 concepto: ""
@@ -183,7 +182,7 @@ export default {
 
         clearFormPago() {
             this.pagoFactura = {
-                id_cuenta: "",
+                cuenta_destino: "",
                 npe: ""
             }
         },
@@ -335,9 +334,9 @@ export default {
 
     <div class="container-sm vertical-scrollable">
         <div class="row">
-            <div class="col-sm-6 mt-3 mb-3 mb-sm-0" v-for="(cuenta, index) in cuentas" :key="cuenta.id">
-                <div class="card" data-bs-toggle="collapse" :data-bs-target="`#collapse-cuenta-`+cuenta.id"
-                     aria-expanded="false" :aria-controls="`collapse-cuenta-`+cuenta.id">
+            <div class="col-sm-6 mt-3 mb-3 mb-sm-0" v-for="(cuenta, index) in cuentas" :key="cuenta.numero_cuenta">
+                <div class="card" data-bs-toggle="collapse" :data-bs-target="`#collapse-cuenta-`+index"
+                     aria-expanded="false" :aria-controls="`collapse-cuenta-`+index">
                     <div class="card-header fw-bold">
                         <i class="bi bi-piggy-bank"></i> {{ cuenta.numero_cuenta }}
                     </div>
@@ -349,7 +348,7 @@ export default {
                         </p>
                     </div>
 
-                    <div class="collapse" :id="`collapse-cuenta-`+cuenta.id">
+                    <div class="collapse" :id="`collapse-cuenta-`+index">
                         <div class="container text-center">
                             <hr>
                             <div class="row align-items-center justify-content-center m-1">

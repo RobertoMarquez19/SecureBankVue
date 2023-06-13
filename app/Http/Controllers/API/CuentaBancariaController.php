@@ -74,7 +74,6 @@ class CuentaBancariaController extends BaseController
             $cuentas = Collection::empty();
             foreach ($cliente->cuentas as $cuenta){
                 $cuentas->push([
-                    'id'=>$cuenta->id,
                     'numero_cuenta'=>Crypt::decryptString($cuenta->numero_cuenta),
                     'monto'=>round($cuenta->monto_cuenta,2),
                     'fecha_apertura'=>$cuenta->fecha_apertura,

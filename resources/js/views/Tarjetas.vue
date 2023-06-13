@@ -10,7 +10,7 @@ export default {
             tarjetasCredito: [],
             tarjetaCreditoSeleccionada: null,
             pagoFactura: {
-                id_tarjeta: "",
+                numero_tarjeta: "",
                 npe: ""
             },
             movimientos: [],
@@ -52,7 +52,7 @@ export default {
         },
 
         async validarNpe() {
-            this.pagoFactura.id_tarjeta = this.tarjetaCreditoSeleccionada.id
+            this.pagoFactura.numero_tarjeta = this.tarjetaCreditoSeleccionada.numero_tarjeta
             await axios.post('cliente/facturas', {npe: this.pagoFactura.npe}).then(response => {
                 const swalWithCustomButtons = Swal.mixin({
                     customClass: {
@@ -102,7 +102,7 @@ export default {
 
         async obtenerMovimientos(tarjeta){
             this.spinnerMovimientos = true;
-            await axios.post('cliente/tarjetascredito/transferencias',{id_tarjeta:tarjeta.id}).then(response => {
+            await axios.post('cliente/tarjetascredito/transferencias',{numero_tarjeta:tarjeta.numero_tarjeta}).then(response => {
                 this.movimientos=response.data.data
                 this.spinnerMovimientos = false;
             }).catch(({response}) => {
@@ -119,7 +119,7 @@ export default {
 
         clearFormPago() {
             this.pagoFactura = {
-                id_cuenta: "",
+                numero_tarjeta: "",
                 npe: ""
             }
         },
@@ -144,7 +144,7 @@ export default {
                 </div>
                 <form v-if="tarjetaCreditoSeleccionada!=null" ref="pagoForm" @submit.prevent="validarNpe()">
                     <div class="modal-body">
-                        <label for="cuenta_origen" class="form-label mt-2">Cuenta</label>
+                        <label for="cuenta_origen" class="form-label mt-2">Tarjeta</label>
                         <input class="form-control" type="text" placeholder="Disabled input"
                                aria-label="Disabled input example" :value="tarjetaCreditoSeleccionada.numero_tarjeta" disabled
                                readonly>
@@ -236,9 +236,9 @@ export default {
 
     <div class="container-sm vertical-scrollable">
         <div class="row">
-            <div class="col-sm-6 mt-3 mb-3 mb-sm-0" v-for="(tarjeta, index) in tarjetasCredito" :key="tarjeta.id">
-                <div class="card" data-bs-toggle="collapse" :data-bs-target="`#collapse-tarjeta-`+tarjeta.id"
-                     aria-expanded="false" :aria-controls="`collapse-tarjeta-`+tarjeta.id">
+            <div class="col-sm-6 mt-3 mb-3 mb-sm-0" v-for="(tarjeta, index) in tarjetasCredito" :key="index">
+                <div class="card" data-bs-toggle="collapse" :data-bs-target="`#collapse-tarjeta-`+index"
+                     aria-expanded="false" :aria-controls="`collapse-tarjeta-`+index">
                     <div class="card-header fw-bold">
                         <i class="bi bi-credit-card"></i> {{ tarjeta.numero_tarjeta }}
                     </div>
@@ -251,7 +251,7 @@ export default {
                         </p>
                     </div>
 
-                    <div class="collapse" :id="`collapse-tarjeta-`+tarjeta.id">
+                    <div class="collapse" :id="`collapse-tarjeta-`+index">
                         <div class="container text-center">
                             <hr>
                                 <button type="button" class="gradient-custom-2 btn col m-1 text-white"

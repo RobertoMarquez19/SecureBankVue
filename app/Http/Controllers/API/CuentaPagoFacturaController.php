@@ -19,11 +19,13 @@ class CuentaPagoFacturaController extends BaseController
     {
         try {
             $validator = Validator::make($request->all(), [
-                'id_cuenta' => 'required',
+                'cuenta_origen' => 'required|max:20|min:20',
                 'npe' => 'required|min:34|max:34'
             ],
                 [
-                    'id_cuenta.required' => 'El codigo de cuenta es requerido',
+                    'cuenta_origen.required' => 'El numero de cuenta origen es requerido',
+                    'cuenta_origen.max' => 'El numero de cuenta origen debe poseer 20 caracteres maximos',
+                    'cuenta_origen.min' => 'El numero de cuenta origen debe poseer 20 caracteres como minimo',
                     'npe.required' => 'El NPE es requerido',
                     'npe.min' => 'El NPE debe contener 34 caracteres minimos',
                     'npe.max' => 'El NPE debe contener 34 caracteres maximos'
@@ -35,7 +37,7 @@ class CuentaPagoFacturaController extends BaseController
 
                 $cliente = User::find(Auth::id())->cliente;
                 $input = $request->all();
-                if ($cuenta = CuentaBancaria::where('id', $input['id_cuenta'])->where('id_cliente', $cliente->id)->first()) {
+                if ($cuenta = CuentaBancaria::where('numero_cuenta_hash',hash('sha256', $input['cuenta_origen']))->where('id_cliente', $cliente->id)->first()) {
                     if ($factura = Factura::where('npe', $input['npe'])->first()) {
                         if ($cuenta->monto_cuenta >= $factura->monto) {
                             $pago = new CuentaPagoFactura(['from_cuenta_id' => $cuenta->id,

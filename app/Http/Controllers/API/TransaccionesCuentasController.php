@@ -20,14 +20,16 @@ class TransaccionesCuentasController extends BaseController
         try {
             $validator = Validator::make($request->all(), [
                 'cuenta_destino' => 'required|max:20|min:20',
-                'id_cuenta' => 'required',
+                'cuenta_origen' => 'required|max:20|min:20',
                 'monto' => 'required|numeric|min:0.01',
             ],
                 [
                     'cuenta_destino.required' => 'El numero de cuenta destino es requerido',
                     'cuenta_destino.max' => 'El numero de cuenta destino debe poseer 20 caracteres maximos',
                     'cuenta_destino.min' => 'El numero de cuenta destino debe poseer 20 caracteres como minimo',
-                    'id_cuenta.required' => 'El codigo de cuenta es requerido',
+                    'cuenta_origen.required' => 'El numero de cuenta origen es requerido',
+                    'cuenta_origen.max' => 'El numero de cuenta origen debe poseer 20 caracteres maximos',
+                    'cuenta_origen.min' => 'El numero de cuenta origen debe poseer 20 caracteres como minimo',
                     'monto.required' => 'El monto de la transferencia es requerido',
                     'monto.numeric' => 'El monto debe ser un valor numerico',
                     'monto.min' => 'El monto de la transaccion debe ser un centavo como minimo',
@@ -38,17 +40,14 @@ class TransaccionesCuentasController extends BaseController
             } else {
                 $cliente = User::find(Auth::id())->cliente;
                 $input = $request->all();
-                if (CuentaBancaria::where('id', $input['id_cuenta'])->where('id_cliente', $cliente->id)->first()) {
+                if ($cuenta_origen = CuentaBancaria::where('numero_cuenta_hash',hash('sha256', $input['cuenta_origen']))->where('id_cliente', $cliente->id)->first()) {
                     $cuenta_destino_hash = hash('sha256', $input['cuenta_destino']);
                     if ($cuenta_destino = CuentaBancaria::where('numero_cuenta_hash', $cuenta_destino_hash)->first()) {
-                        if ($cuenta_destino->id == $input['id_cuenta']) {
+                        if($cuenta_origen->id == $cuenta_destino->id){
                             return $this->sendError("Misma cuenta", ['No puedes realizar transferencias a esta misma cuenta'], 405);
-                        } else {
-
-                            //Verificamos el monto de la cuenta
-                            $cuenta_origen = CuentaBancaria::where('id', $input['id_cuenta'])->first();
+                        }else{
                             if ($cuenta_origen->monto_cuenta >= $input['monto']) {
-                                $transferencia = new TransaccionesCuentas(['from_cuenta_id' => $input['id_cuenta'], 'to_cuenta_id' => $cuenta_destino->id,
+                                $transferencia = new TransaccionesCuentas(['from_cuenta_id' => $cuenta_origen->id, 'to_cuenta_id' => $cuenta_destino->id,
                                     'monto' => $input['monto'],
                                     'concepto' => $input['concepto']]);
 
@@ -64,7 +63,7 @@ class TransaccionesCuentasController extends BaseController
                                 return $this->sendError("Fondos insuficientes", ["Su cuenta no posee los fondos suficientes para realizar la transaccion"], 405);
                             }
                         }
-                    } else {
+                    }else{
                         return $this->sendError("Not found", ['La cuenta ingresada no existe'], 404);
                     }
                 } else {
@@ -79,10 +78,12 @@ class TransaccionesCuentasController extends BaseController
     public function transaccionesCuentas(Request $request){
         try {
             $validator = Validator::make($request->all(), [
-                'id_cuenta' => 'required',
+                'numero_cuenta' => 'required|max:20|min:20',
             ],
                 [
-                    'id_cuenta.required' => 'El codigo de cuenta es requerido',
+                    'numero_cuenta.required' => 'El numero de cuenta es requerido',
+                    'numero_cuenta.max' => 'El numero de cuenta debe poseer 20 caracteres maximos',
+                    'numero_cuenta.min' => 'El numero de cuenta debe poseer 20 caracteres como minimo',
                 ]);
 
             if ($validator->fails()) {
@@ -90,7 +91,7 @@ class TransaccionesCuentasController extends BaseController
             } else {
                 $cliente = User::find(Auth::id())->cliente;
                 $input = $request->all();
-                if ($cuenta = CuentaBancaria::where('id', $input['id_cuenta'])->where('id_cliente', $cliente->id)->first()) {
+                if ($cuenta = CuentaBancaria::where('numero_cuenta_hash',hash('sha256', $input['numero_cuenta']))->where('id_cliente', $cliente->id)->first()) {
                     //Armamos el array
                     $transacciones = Collection::empty();
                     foreach ($cuenta->transaccionesCuentas as $transaccion){

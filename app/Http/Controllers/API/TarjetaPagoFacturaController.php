@@ -21,11 +21,13 @@ class TarjetaPagoFacturaController extends BaseController
     public function store(Request $request){
         try {
             $validator = Validator::make($request->all(), [
-                'id_tarjeta' => 'required',
+                'numero_tarjeta' => 'required|min:16|max:16',
                 'npe' => 'required|min:34|max:34'
             ],
                 [
-                    'id_tarjeta.required' => 'El codigo de tarjeta es requerido',
+                    'numero_tarjeta.required' => 'El numero de tarjeta es requerido',
+                    'numero_tarjeta.min' => 'El nuemro de tarjeta debe poseer 16 caracteres como minimo',
+                    'numero_tarjeta.max' => 'El numero de tarjeta debe poseer 16 caracteres maximo',
                     'npe.required' => 'El NPE es requerido',
                     'npe.min' => 'El NPE debe contener 34 caracteres minimos',
                     'npe.max' => 'El NPE debe contener 34 caracteres maximos'
@@ -37,7 +39,7 @@ class TarjetaPagoFacturaController extends BaseController
 
                 $cliente = User::find(Auth::id())->cliente;
                 $input = $request->all();
-                if ($tarjetaCredito = TarjetaCredito::where('id', $input['id_tarjeta'])->where('id_cliente', $cliente->id)->first()) {
+                if ($tarjetaCredito = TarjetaCredito::where('numero_tarjeta_hash', hash('sha256',$input['numero_tarjeta']))->where('id_cliente', $cliente->id)->first()) {
                     if ($factura = Factura::where('npe', $input['npe'])->first()) {
                         if ($tarjetaCredito->monto >= $factura->monto) {
                             $pago = new TarjetaPagoFactura(['from_tarjeta_id' => $tarjetaCredito->id,
@@ -71,10 +73,12 @@ class TarjetaPagoFacturaController extends BaseController
     public function transaccionesTarjeta(Request $request){
         try {
             $validator = Validator::make($request->all(), [
-                'id_tarjeta' => 'required',
+                'numero_tarjeta' => 'required|min:16|max:16',
             ],
                 [
-                    'id_tarjeta.required' => 'El codigo de tarjeta es requerido',
+                    'numero_tarjeta.required' => 'El numero de tarjeta es requerido',
+                    'numero_tarjeta.min' => 'El nuemro de tarjeta debe poseer 16 caracteres como minimo',
+                    'numero_tarjeta.max' => 'El numero de tarjeta debe poseer 16 caracteres maximo',
                 ]);
 
             if ($validator->fails()) {
@@ -82,7 +86,7 @@ class TarjetaPagoFacturaController extends BaseController
             } else {
                 $cliente = User::find(Auth::id())->cliente;
                 $input = $request->all();
-                if ($tarjetaCredito = TarjetaCredito::where('id', $input['id_tarjeta'])->where('id_cliente', $cliente->id)->first()) {
+                if ($tarjetaCredito = TarjetaCredito::where('numero_tarjeta_hash', hash('sha256',$input['numero_tarjeta']))->where('id_cliente', $cliente->id)->first()) {
                     //Armamos el array
                     $transacciones = Collection::empty();
                     foreach ($tarjetaCredito->pagosFacturas as $pago){
