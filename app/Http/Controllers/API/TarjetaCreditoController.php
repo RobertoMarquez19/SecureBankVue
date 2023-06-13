@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
 use App\Models\TarjetaCredito;
 use App\Models\User;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 
@@ -43,13 +43,17 @@ class TarjetaCreditoController extends BaseController
         try {
             $cliente = User::find(Auth::id())->cliente;
             $tarjetas = Collection::empty();
-            foreach ($cliente->tarjetasDebito as $tarjeta){
+            foreach ($cliente->tarjetasCredito as $tarjeta){
+                $dividida = str_split(Crypt::decryptString($tarjeta->numero_tarjeta), 4);
+
+                $resultado = implode(" ", $dividida);
+
                 $tarjetas->push([
                     'id'=>$tarjeta->id,
-                    'numero_tarjeta'=>Crypt::decryptString($tarjeta->numero_tarjeta),
-                    'monto'=>$tarjeta->monto,
+                    'numero_tarjeta'=>$resultado,
+                    'monto'=>round($tarjeta->monto,2),
                     'fecha_emision'=>$tarjeta->fecha_emision,
-                    'fecha_vencimiento'=>$tarjeta->fecha_vencimiento,
+                    'fecha_vencimiento'=>Carbon::parse($tarjeta->fecha_vencimiento)->format('m/Y'),
                     'tipo'=>$tarjeta->tipoTarjeta]);
             }
             return $this->sendResponse($tarjetas,"Tarjetas de credito");

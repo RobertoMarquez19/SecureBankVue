@@ -29,11 +29,11 @@ Route::middleware(['auth:api'])->group( function () {
     Route::post("cliente/cuentas",[\App\Http\Controllers\API\CuentaBancariaController::class,'store']);
     Route::get('cliente/cuentas',[\App\Http\Controllers\API\CuentaBancariaController::class,'cuentasByCliente']);
 
-    Route::post("cliente/cuentas/tarjetascredito",[\App\Http\Controllers\API\TarjetaCreditoController::class,'store']);
-    Route::get('cliente/cuentas/tarjetascredito',[\App\Http\Controllers\API\TarjetaCreditoController::class,'tarjetasCreditoByCliente']);
+    Route::post("cliente/tarjetascredito",[\App\Http\Controllers\API\TarjetaCreditoController::class,'store']);
+    Route::get('cliente/tarjetascredito',[\App\Http\Controllers\API\TarjetaCreditoController::class,'tarjetasCreditoByCliente']);
 
-    Route::post("cliente/tarjetasdebito",[\App\Http\Controllers\API\TarjetaDebitoController::class,'store']);
-    Route::post('cliente/tarjetasdebito',[\App\Http\Controllers\API\TarjetaDebitoController::class,'tarjetasDebitoByCuenta']);
+    Route::post("cliente/cuentas/tarjetasdebito",[\App\Http\Controllers\API\TarjetaDebitoController::class,'store']);
+    Route::post('cliente/cuentas/tarjetasdebito',[\App\Http\Controllers\API\TarjetaDebitoController::class,'tarjetasDebitoByCuenta']);
 
     Route::post('cliente/transferencia/cuenta',[\App\Http\Controllers\API\CuentaBancariaController::class,'checkCuentaExiste']);
 
@@ -44,4 +44,8 @@ Route::middleware(['auth:api'])->group( function () {
     Route::post('cliente/cuentas/transferencias',[\App\Http\Controllers\API\TransaccionesCuentasController::class,'transaccionesCuentas']);
 
     Route::post('cliente/cuentas/facturas/pago',[\App\Http\Controllers\API\CuentaPagoFacturaController::class,'store']);
+
+
+    Route::post('cliente/tarjetascredito/facturas/pago',[\App\Http\Controllers\API\TarjetaPagoFacturaController::class,'store']);
+    Route::post('cliente/tarjetascredito/transferencias',[\App\Http\Controllers\API\TarjetaPagoFacturaController::class,'transaccionesTarjeta']);
 });

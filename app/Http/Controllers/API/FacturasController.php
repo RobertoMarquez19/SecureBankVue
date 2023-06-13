@@ -25,7 +25,7 @@ class FacturasController extends BaseController
             }else{
                 $input = $request->all();
                 if ($factura = Factura::where('npe', $input['npe'])->first()) {
-                    $datosFactura['monto']=$factura->monto;
+                    $datosFactura['monto']=round($factura->monto,2);
                     $datosFactura['colector']=$factura->colector;
                     return $this->sendResponse($datosFactura,"Datos factura");
                 }else{

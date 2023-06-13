@@ -23,4 +23,8 @@ class TarjetaCredito extends Model
     public function tipoTarjeta(){
         return $this->belongsTo(TarjetaTipos::class,'id_tipo_tarjeta');
     }
+
+    public function pagosFacturas(){
+        return $this->hasMany(TarjetaPagoFactura::class,'from_tarjeta_id','id');
+    }
 }
