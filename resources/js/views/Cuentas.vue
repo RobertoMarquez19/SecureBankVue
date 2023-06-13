@@ -46,7 +46,7 @@ export default {
                 this.cuentas = response.data.data;
                 this.spinnerCuentas = false;
             }).catch(({response}) => {
-                let mensajeError = response.data.message;
+                let mensajeError = response.data.data;
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',

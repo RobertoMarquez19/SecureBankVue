@@ -90,12 +90,19 @@ export default {
                 /* Read more about handling dismissals below */
                 if (result.dismiss === Swal.DismissReason.timer) {
                     // TODO: Implementar Logout
-                    //this.logout();
+                    this.logout();
                 } else if (result.isConfirmed) {
                     axios.get('cliente/sesion/renovar').then((response) => {
                         console.log(response);
                         let tokenResponse = response.data.data;
                         Auth.renewToken(tokenResponse);
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Exito',
+                            text: 'Su token ha sido renovado',
+                            showConfirmButton: true,
+                            allowOutsideClick: false
+                        })
                     }).catch(({ response }) => {
                         console.error(response.data);
                         let mensajeError = response.data.message;
@@ -119,6 +126,8 @@ export default {
                 }
             })
         }, 180000);
+        // Cada 3 minutos 180000
+        // Valores probados 60000
     },
     beforeUnmount() {
         clearInterval(this.timer)

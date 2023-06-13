@@ -30,36 +30,36 @@
                                 <div class="row">
                                     <div class="col form-outline mb-4">
                                         <label class="form-label" for="dui">DUI:</label>
-                                        <input type="text" id="dui" name="dui" class="form-control" required
-                                               v-model="cliente.dui"/>
+                                        <input type="text" id="dui" name="dui" placeholder="00000000-0" class="form-control" required
+                                               v-model="cliente.dui" pattern="[0-9]{8}-[0-9]{1}" title="Numero de DUI con Guiones"/>
                                     </div>
 
                                     <div class="col form-outline mb-4">
                                         <label class="form-label" for="nit">NIT:</label>
-                                        <input type="text" id="nit" name="nit" class="form-control" required
-                                               v-model="cliente.nit"/>
+                                        <input type="text" id="nit" name="nit" placeholder="0000-000000-000-0" class="form-control" required
+                                               v-model="cliente.nit" pattern="[0-9]{4}-[0-9]{6}-[0-9]{3}-[0-9]{1}" title="Numero de NIT con Guiones"/>
                                     </div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col form-outline mb-4">
                                         <label class="form-label" for="nombres">Nombres:</label>
-                                        <input type="text" id="nombres" name="nombres" class="form-control" required
-                                               v-model="cliente.nombres"/>
+                                        <input type="text" id="nombres" name="nombres" placeholder="Tus Nombres" class="form-control" required
+                                               v-model="cliente.nombres" pattern="[A-Za-z\s]*$" title="Primer y Segundo Nombre"/>
                                     </div>
 
                                     <div class="col form-outline mb-4">
                                         <label class="form-label" for="apellidos">Apellido:</label>
-                                        <input type="text" id="apellidos" name="apellidos" class="form-control"
-                                               required v-model="cliente.apellidos"/>
+                                        <input type="text" id="apellidos" name="apellidos" placeholder="Tus Apellidos" class="form-control"
+                                               required v-model="cliente.apellidos" pattern="[A-Za-z\s]*$" title="Primer y Segundo Apellido"/>
                                     </div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col form-outline mb-4">
                                         <label class="form-label" for="email">Correo Electronico:</label>
-                                        <input type="email" id="email" name="email" class="form-control" required
-                                               v-model="cliente.email"/>
+                                        <input type="email" id="email" name="email" placeholder="Tu Correo Electronico" class="form-control" required
+                                               v-model="cliente.email" title="Correo Electronico Valido"/>
                                     </div>
 
                                     <div class="col form-outline mb-4">
@@ -73,14 +73,15 @@
                                 <div class="row">
                                     <div class="col form-outline mb-4">
                                         <label class="form-label" for="telefono">Teléfono:</label>
-                                        <input type="tel" id="telefono" name="telefono" class="form-control"
-                                               required v-model="cliente.telefono"/>
+                                        <input type="tel" id="telefono" name="telefono" placeholder="00000000" class="form-control"
+                                               required v-model="cliente.telefono" pattern="[0-9]{4}-[0-9]{4}" title="Numero Telefonico sin guiones"/>
                                     </div>
 
                                     <div class="col form-outline mb-4">
                                         <label class="form-label" for="telefono_trabajo">Teléfono Trabajo:</label>
-                                        <input type="tel" id="telefono_trabajo" name="telefono_trabajo"
-                                               class="form-control" v-model="cliente.telefono_trabajo"/>
+                                        <input type="tel" id="telefono_trabajo" placeholder="00000000" name="telefono_trabajo"
+                                               class="form-control" v-model="cliente.telefono_trabajo" pattern="[0-9]{4}-[0-9]{4}"
+                                               title="Numero Telefonico sin guiones"/>
                                     </div>
                                 </div>
 
@@ -88,7 +89,7 @@
                                 <div class="form-outline mb-4">
                                     <label class="form-label" for="direccion">Dirección:</label>
                                     <textarea class="form-control" id="direccion" name="direccion" required
-                                              v-model="cliente.direccion">
+                                              v-model="cliente.direccion" placeholder="Tu Direccion">
                                                     </textarea>
                                 </div>
 
@@ -150,15 +151,15 @@
                                 <div class="row">
                                     <div class="col form-outline mb-4">
                                         <label class="form-label" for="password">Contraseña:</label>
-                                        <input type="password" id="password" name="password" class="form-control"
-                                               required
+                                        <input type="password" id="password" placeholder="••••••••••" name="password" class="form-control"
+                                               required title="8 caracteres minimo"
                                                v-model="cliente.password"/>
                                     </div>
 
                                     <div class="col form-outline mb-4">
                                         <label class="form-label" for="password_confirm">Repetir Contraseña:</label>
-                                        <input type="password" id="password_confirm" name="password_confirm"
-                                               class="form-control" required v-model="cliente.password_confirmation"/>
+                                        <input type="password" id="password_confirm" placeholder="••••••••••" name="password_confirm"
+                                               class="form-control" required v-model="cliente.password_confirmation" title="8 caracteres minimo"/>
                                     </div>
                                 </div>
 

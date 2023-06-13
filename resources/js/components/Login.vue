@@ -26,11 +26,13 @@
                                     </div>
                                     <div class="form-outline mb-4">
                                         <label for="email" class="form-label text2">Correo</label>
-                                        <input type="email" required class="form-control" v-model="auth.email">
+                                        <input type="email" required class="form-control"
+                                               placeholder="Escribe tu correo" v-model="auth.email">
                                     </div>
                                     <div class="form-outline mb-4">
                                         <label for="password" class="form-label text2">Contraseña</label>
-                                        <input type="password" required class="form-control" v-model="auth.password">
+                                        <input type="password" required min="4" class="form-control"
+                                               placeholder="Escribe tu contraseña" v-model="auth.password">
                                     </div>
                                     <div class="text-center pt-1 mb-5 pb-1">
                                         <button class="btn btn-block fa-lg gradient-custom-2 mb-3 mx-3
@@ -46,6 +48,9 @@
                                 </form>
 
                                 <div v-if="mensajeEnviado === true">
+                                    <button class="btn btn-outline-secondary" @click="regresarLogin()">
+                                        <i class="bi bi-caret-left"></i> Atras
+                                    </button>
                                     <form action="javascript:void(0)" method="post">
                                         <div class="col-12"
                                              v-if="Object.keys(validationErrorsSms).length > 0">
@@ -127,6 +132,21 @@ export default {
         // TODO : Boton de retroceder en login que pondra la variable this.mensajeEnviado en false
         // TODO : Para mostrar nuevamente el form de correo y contraseña, y solicitar el mensaje
         // TODO : Agregar mascaras a los campos, con placeholders
+        regresarLogin() {
+            // Formateamos los objetos de login y logout
+            this.usuario = {
+                code: "",
+                email: "",
+                password: "",
+                verification_sid: "",
+                telefono_secret: ""
+            };
+            this.auth = {
+                email: "",
+                password: ""
+            }
+            this.mensajeEnviado = !this.mensajeEnviado;
+        },
         async login() {
             this.processing = true
             await axios.post('usuario/sms', this.auth).then((response) => {
@@ -206,12 +226,12 @@ export default {
                             footer: 'Revise las validaciones en el formulario'
                         })
                     } else {
-                        this.validationErrors = {}
+                        this.validationErrors = response.data.data;
+                        console.trace(response);
                         Swal.fire({
                             icon: 'error',
-                            title: 'Error ah ocurrido algo inesperado',
-                            text: mensajeError,
-                            footer: 'Estamos trabajando para resolverlo'
+                            title: 'Error',
+                            text: this.validationErrors
                         });
                     }
                 }
@@ -238,19 +258,19 @@ export default {
                 console.error(response.data);
                 let mensajeError = response.data.message;
                 if (response.status === 401 || response.status === 422) {
-                    this.validationErrors = response.data.data
+                    this.validationErrorsSms = response.data.data
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
                         text: mensajeError,
                     });
                 } else {
-                    this.validationErrors = {}
+                    this.validationErrorsSms = response.data.data;
+                    console.trace(response);
                     Swal.fire({
                         icon: 'error',
-                        title: 'Error ah ocurrido algo inesperado',
-                        text: mensajeError,
-                        footer: 'Estamos trabajando para resolverlo'
+                        title: 'Error',
+                        text: this.validationErrorsSms
                     });
                 }
             }).finally(() => {
