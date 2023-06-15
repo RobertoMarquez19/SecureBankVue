@@ -74,13 +74,13 @@
                                     <div class="col form-outline mb-4">
                                         <label class="form-label" for="telefono">Teléfono:</label>
                                         <input type="tel" id="telefono" name="telefono" placeholder="00000000" class="form-control"
-                                               required v-model="cliente.telefono" pattern="[0-9]{4}-[0-9]{4}" title="Numero Telefonico sin guiones"/>
+                                               required v-model="cliente.telefono" pattern="[0-9]{8}" title="Numero Telefonico sin guiones"/>
                                     </div>
 
                                     <div class="col form-outline mb-4">
                                         <label class="form-label" for="telefono_trabajo">Teléfono Trabajo:</label>
                                         <input type="tel" id="telefono_trabajo" placeholder="00000000" name="telefono_trabajo"
-                                               class="form-control" v-model="cliente.telefono_trabajo" pattern="[0-9]{4}-[0-9]{4}"
+                                               class="form-control" v-model="cliente.telefono_trabajo" pattern="[0-9]{8}"
                                                title="Numero Telefonico sin guiones"/>
                                     </div>
                                 </div>
