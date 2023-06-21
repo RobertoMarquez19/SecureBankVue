@@ -246,11 +246,11 @@ export default {
                         footer: 'Revise las validaciones en el formulario'
                     });
                 } else {
-                    this.validationErrors = {}
+                    this.validationErrors = response.data.data
                     Swal.fire({
                         icon: 'error',
                         title: 'Error ah ocurrido algo inesperado',
-                        text: mensajeError,
+                        text: this.validationErrors,
                         footer: 'Estamos trabajando para resolverlo'
                     });
                 }
